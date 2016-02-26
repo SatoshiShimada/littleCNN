@@ -9,6 +9,7 @@ public:
 	void train(float **, float **, int, int);
 	void test(float **, float **, int);
 	void setTest(float **, float **, int);
+	void setTest(float **, float **, int, int);
 	void saveParameters(char *);
 	void loadParameters(char *);
 private:
@@ -18,5 +19,6 @@ private:
 	int testDataNum;
 	float **testData;
 	float **testDataLabel;
+	int testInterval;
 };
 

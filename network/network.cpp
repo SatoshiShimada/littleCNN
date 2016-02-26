@@ -53,7 +53,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 			}
 		}
 		/* test */
-		if((ep + 1) % 1 == 0) {
+		if((ep + 1) % this->testInterval == 0) {
 			int acc = 0;
 			if(accuracyFlag) {
 				for(int i = 0; i < trainingDataCount; i++) {
@@ -72,7 +72,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 						acc++;
 				}
 				printf("accuracy [%d / %d]\n", acc, trainingDataCount);
-				printf("\t%f\n", acc * 100.0 / trainingDataCount);
+				printf("\t%f%\n", acc * 100.0 / trainingDataCount);
 			}
 			if(testFlag) {
 				acc = 0;
@@ -92,7 +92,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 						acc++;
 				}
 				printf("test [%d / %d]\n", acc, testDataNum);
-				printf("\t%f\n", acc * 100.0 / testDataNum);
+				printf("\t%f%\n", acc * 100.0 / testDataNum);
 			}
 		}
 	}
@@ -125,12 +125,22 @@ void Network::test(float **testData, float **testDataLabel, int testDataNum)
 	printf("\t%f\n", acc * 100.0 / testDataNum);
 }
 
+void Network::setTest(float **testData, float **testDataLabel, int testDataNum, int interval)
+{
+	this->testFlag = true;
+	this->testData = testData;
+	this->testDataLabel = testDataLabel;
+	this->testDataNum = testDataNum;
+	this->testInterval = interval;
+}
+
 void Network::setTest(float **testData, float **testDataLabel, int testDataNum)
 {
 	this->testFlag = true;
 	this->testData = testData;
 	this->testDataLabel = testDataLabel;
 	this->testDataNum = testDataNum;
+	this->testInterval = 1;
 }
 
 void Network::saveParameters(char *filename)

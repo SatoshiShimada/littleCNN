@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
 	}
 
 	/* parameters */
-	int epoch = 200;
+	int epoch = 20000;
 	float lr = 0.1;
 
 	/* Create Network */
@@ -63,9 +63,9 @@ int main(int argc, char *argv[])
 	net->appendLayer(full1);
 	net->appendLayer(full2);
 
-	//net->loadParameters((char *)"parameters/exor_200000.param");
+	net->setTest(trainingData, labelData, trainingDataNum, 1000);
 	net->train(trainingData, labelData, trainingDataNum, epoch);
-	net->saveParameters((char *)"parameters/exor_200000.param");
+	net->saveParameters((char *)"parameters/logic/exor_20000.param");
 
 	delete net;
 	delete act1t;

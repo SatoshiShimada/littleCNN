@@ -1,6 +1,6 @@
 #!/bin/sh
 
-download="false"
+download="true"
 text="true"
 convert="false"
 

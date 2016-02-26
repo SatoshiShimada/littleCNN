@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 	const int trainingDataNum = 60000;
 	float *trainingData[trainingDataNum];
 	float *labelData[trainingDataNum];
-	fp = fopen("../../dataset/mnist/train-images.txt", "r");
+	fp = fopen("dataset/mnist/train-images.txt", "r");
 	if(!fp) return 0;
 	for(int i = 0; i < trainingDataNum; i++) {
 		trainingData[i] = new float[784];
@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	fclose(fp);
-	fp = fopen("../../dataset/mnist/train-labels.txt", "r");
+	fp = fopen("dataset/mnist/train-labels.txt", "r");
 	if(!fp) return 0;
 	int label;
 	for(int i = 0; i < trainingDataNum; i++) {
@@ -33,7 +33,7 @@ int main(int argc, char *argv[])
 	const int testDataNum = 10000;
 	float *testData[testDataNum];
 	float *testLabelData[testDataNum];
-	fp = fopen("../../dataset/mnist/test-images.txt", "r");
+	fp = fopen("dataset/mnist/test-images.txt", "r");
 	if(!fp) return 0;
 	for(int i = 0; i < testDataNum; i++) {
 		testData[i] = new float[784];
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 		}
 	}
 	fclose(fp);
-	fp = fopen("../../dataset/mnist/test-labels.txt", "r");
+	fp = fopen("dataset/mnist/test-labels.txt", "r");
 	if(!fp) return 0;
 	for(int i = 0; i < testDataNum; i++) {
 		fscanf(fp, " %d", &label);
@@ -56,7 +56,7 @@ int main(int argc, char *argv[])
 
 	/* parameters */
 	int epoch = 50;
-	float lr = 0.005;
+	float lr = 0.01;
 
 	/* Create Network */
 	Network *net;
@@ -78,9 +78,9 @@ int main(int argc, char *argv[])
 	net->appendLayer(full2);
 
 	net->setTest(testData, testLabelData, testDataNum);
-	net->loadParameters((char *)"parameters/mnist_2_100.param");
+	//net->loadParameters((char *)"parameters/mnist/50.param");
 	net->train(trainingData, labelData, trainingDataNum, epoch);
-	net->saveParameters((char *)"parameters/mnist_2_150.param");
+	net->saveParameters((char *)"parameters/mnist/50.param");
 	//net->test(testData, testLabelData, testDataNum);
 
 	delete net;
