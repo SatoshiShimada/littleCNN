@@ -1,0 +1,2 @@
+# littleCNN
+Convolutional Neural Network
