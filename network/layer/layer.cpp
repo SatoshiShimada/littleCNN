@@ -101,3 +101,59 @@ float FullyConnectedLayer::diff(float input)
 	return this->activationFunc->diff(input);
 }
 
+ConvolutionLayer::ConvolutionLayer(int inputWidth, int inputHeight, int inputChannels, int filterWidth, int filterHeight, int filterNum, act_T *, float)
+{
+	this->inputWidth = inputWidth;
+	this->inputHeight = inputHeight;
+	this->inputChannels = inputChannels;
+	this->filterWidth = filterWidth;
+	this->filterHeight = filterHeight;
+	this->filterNum = filterNum;
+
+	this->weight = new float[(filterNum*inputChannels*filterHeight*filterWidth)];
+}
+
+ConvolutionLayer::~ConvolutionLayer()
+{
+	delete this->weight;
+}
+
+float *ConvolutionLayer::forward(float *inputs)
+{
+	return this->activated;
+}
+
+void ConvolutionLayer::backward(float *inputs, float *delta)
+{
+}
+
+float *ConvolutionLayer::backward(float *inputs, float *delta, float *prevOut)
+{
+	return this->nextDelta;
+}
+
+float *ConvolutionLayer::getWeight(void)
+{
+	return this->weight;
+}
+
+float *ConvolutionLayer::getBias(void)
+{
+	return this->bias;
+}
+
+float *ConvolutionLayer::getOutput(void)
+{
+	return this->outputs;
+}
+
+float ConvolutionLayer::apply(float input)
+{
+	return this->activationFunc->apply(input);
+}
+
+float ConvolutionLayer::diff(float input)
+{
+	return this->activationFunc->diff(input);
+}
+
