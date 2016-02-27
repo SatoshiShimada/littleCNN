@@ -7,6 +7,7 @@ int main(int argc, char *argv[])
 {
 	/* create Data */
 	FILE *fp;
+	int value;
 	const int trainingDataNum = 60000;
 	float *trainingData[trainingDataNum];
 	float *labelData[trainingDataNum];
@@ -15,7 +16,8 @@ int main(int argc, char *argv[])
 	for(int i = 0; i < trainingDataNum; i++) {
 		trainingData[i] = new float[784];
 		for(int j = 0; j < 784; j++) {
-			fscanf(fp, " %f", trainingData[i] + j);
+			fscanf(fp, " %d", &value);
+			*(trainingData[i] + j) = value / 255.0;
 		}
 	}
 	fclose(fp);
@@ -38,7 +40,8 @@ int main(int argc, char *argv[])
 	for(int i = 0; i < testDataNum; i++) {
 		testData[i] = new float[784];
 		for(int j = 0; j < 784; j++) {
-			fscanf(fp, " %f", testData[i] + j);
+			fscanf(fp, " %d", &value);
+			*(testData[i] + j) = value / 255.0;
 		}
 	}
 	fclose(fp);
@@ -56,7 +59,7 @@ int main(int argc, char *argv[])
 
 	/* parameters */
 	int epoch = 50;
-	float lr = 0.01;
+	float lr = 0.0005;
 
 	/* Create Network */
 	Network *net;
@@ -78,9 +81,9 @@ int main(int argc, char *argv[])
 	net->appendLayer(full2);
 
 	net->setTest(testData, testLabelData, testDataNum);
-	//net->loadParameters((char *)"parameters/mnist/50.param");
+	net->loadParameters((char *)"parameters/mnist/150.param");
 	net->train(trainingData, labelData, trainingDataNum, epoch);
-	net->saveParameters((char *)"parameters/mnist/50.param");
+	net->saveParameters((char *)"parameters/mnist/200.param");
 	//net->test(testData, testLabelData, testDataNum);
 
 	delete net;
