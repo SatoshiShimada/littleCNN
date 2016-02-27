@@ -1,6 +1,6 @@
 #!/bin/sh
 
-download="false"
+download="true"
 text="true"
 convert="false"
 
@@ -23,10 +23,12 @@ fi
 # convert to text file
 if [ $text = "true" ]; then
 	echo 'Converting to text file'
+	# IF GNU od command only
 	#od -An -v -tu1 -j16 -w784 train-images-idx3-ubyte | sed -e 's/^ *//' | tr -s ' ' > train-images.txt
 	#od -An -v -tu1 -j8 -w1 train-labels-idx1-ubyte | tr -d ' ' > train-labels.txt
 	#od -An -v -tu1 -j16 -w784 t10k-images-idx3-ubyte | sed -e 's/^ *//' | tr -s ' ' > test-images.txt
 	#od -An -v -tu1 -j8 -w1 t10k-labels-idx1-ubyte | tr -d ' ' > test-labels.txt
+	# for any od command
 	od -An -v -tu1 -j16 train-images-idx3-ubyte | tr '\n' ' ' | tr -s ' ' | awk 'BEGIN { RS=" "; i=0 } { if(i == 784) { i=0; printf "\n" }; printf $1; printf " "; i++ }' > train-images.txt
 	od -An -v -tu1 -j8 train-labels-idx1-ubyte | tr '\n' ' ' | tr -d ' ' | fold -s -w 1 > train-labels.txt
 	od -An -v -tu1 -j16 t10k-images-idx3-ubyte | tr '\n' ' ' | tr -s ' ' | awk 'BEGIN { RS=" "; i=0 } { if(i == 784) { i=0; printf "\n" }; printf $1; printf " "; i++ }' > test-images.txt
