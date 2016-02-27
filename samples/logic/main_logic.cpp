@@ -6,35 +6,34 @@
 int main(int argc, char *argv[])
 {
 	/* create Data */
+	FILE *fp;
 	const int trainingDataNum = 4;
 	float *trainingData[trainingDataNum];
 	float *labelData[trainingDataNum];
 	float d[4][2];
-	d[0][0] = 0.0;
-	d[0][1] = 0.0;
-	d[1][0] = 0.0;
-	d[1][1] = 1.0;
-	d[2][0] = 1.0;
-	d[2][1] = 0.0;
-	d[3][0] = 1.0;
-	d[3][1] = 1.0;
-	trainingData[0] = d[0];
-	trainingData[1] = d[1];
-	trainingData[2] = d[2];
-	trainingData[3] = d[3];
+	int value;
+	fp = fopen("dataset/logic/train-exor.txt", "r");
+	if(!fp) return 0;
+	for(int i = 0; i < trainingDataNum; i++) {
+		trainingData[i] = d[i];
+		for(int j = 0; j < 2; j++) {
+			fscanf(fp, " %d", &value);
+			d[i][j] = (float)value;
+		}
+	}
+	fclose(fp);
+	fp = fopen("dataset/logic/train-exor-label.txt", "r");
+	if(!fp) return 0;
 	float l[4][2];
-	l[0][0] = 1.0;
-	l[0][1] = 0.0;
-	l[1][0] = 0.0;
-	l[1][1] = 1.0;
-	l[2][0] = 0.0;
-	l[2][1] = 1.0;
-	l[3][0] = 1.0;
-	l[3][1] = 0.0;
-	labelData[0] = l[0];
-	labelData[1] = l[1];
-	labelData[2] = l[2];
-	labelData[3] = l[3];
+	for(int i = 0; i < trainingDataNum; i++) {
+		labelData[i] = l[i];
+		fscanf(fp, " %d", &value);
+		for(int j = 0; j < 2; j++) {
+			l[i][j] = ((value == j) ? 1.0 : 0.0);
+		}
+	}
+	fclose(fp);
+
 	for(int i = 0; i < 4; i++) {
 		std::cout << trainingData[i][0] << trainingData[i][1] << " | ";
 		std::cout << labelData[i][0] << labelData[i][1] << std::endl;
