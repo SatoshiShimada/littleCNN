@@ -72,7 +72,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 						acc++;
 				}
 				printf("accuracy [%d / %d]\n", acc, trainingDataCount);
-				printf("\t%f%\n", acc * 100.0 / trainingDataCount);
+				printf("\t%f%%\n", acc * 100.0 / trainingDataCount);
 			}
 			if(testFlag) {
 				acc = 0;
@@ -92,7 +92,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 						acc++;
 				}
 				printf("test [%d / %d]\n", acc, testDataNum);
-				printf("\t%f%\n", acc * 100.0 / testDataNum);
+				printf("\t%f%%\n", acc * 100.0 / testDataNum);
 			}
 		}
 	}
@@ -122,7 +122,7 @@ void Network::test(float **testData, float **testDataLabel, int testDataNum)
 			acc++;
 	}
 	printf("accuracy [%d / %d]\n", acc, testDataNum);
-	printf("\t%f\n", acc * 100.0 / testDataNum);
+	printf("\t%f%%\n", acc * 100.0 / testDataNum);
 }
 
 void Network::setTest(float **testData, float **testDataLabel, int testDataNum, int interval)
