@@ -1,5 +1,6 @@
 # littleCNN
-Convolutional Neural Network
+Convolutional Neural Network  
+for simple, easily.
 
 ## Usage
 clone this repository
@@ -7,14 +8,22 @@ clone this repository
 git clone https://github.com/satoshishimada/littleCNN.git
 cd littleCNN
 ```
+### Samples
+* logic  
+compile sample
+```
+make logic
+```
+
+* mnist  
 download dataset
 ```
 cd dataset/mnist
 ./get_mnist.sh
 ```
-compile samples
+compile sample
 ```
-make all
+make mnist
 ```
 
 ## Author
