@@ -54,6 +54,8 @@ private:
 	float *outputs;
 	float *activated;
 	float *nextDelta;
+	float *deltaWeight;
+	float *deltaBias;
 	float lr;
 	int inputWidth;
 	int inputHeight;
@@ -61,6 +63,8 @@ private:
 	int filterWidth;
 	int filterHeight;
 	int filterNum;
+	int outputWidth;
+	int outputHeight;
 public:
 	ConvolutionLayer(int, int, int, int, int, int, act_T *, float);
 	~ConvolutionLayer();
