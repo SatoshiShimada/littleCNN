@@ -6,6 +6,7 @@
 int main(int argc, char *argv[])
 {
 	/* create Data */
+	int ret;
 	FILE *fp;
 	const int trainingDataNum = 4;
 	float *trainingData[trainingDataNum];
@@ -17,7 +18,11 @@ int main(int argc, char *argv[])
 	for(int i = 0; i < trainingDataNum; i++) {
 		trainingData[i] = d[i];
 		for(int j = 0; j < 2; j++) {
-			fscanf(fp, " %d", &value);
+			ret = fscanf(fp, " %d", &value);
+			if(ret != 1) {
+				std::cerr << "Error: couldn't load training dataset" << std::endl;
+				return -1;
+			}
 			d[i][j] = (float)value;
 		}
 	}
@@ -27,7 +32,11 @@ int main(int argc, char *argv[])
 	float l[4][2];
 	for(int i = 0; i < trainingDataNum; i++) {
 		labelData[i] = l[i];
-		fscanf(fp, " %d", &value);
+		ret = fscanf(fp, " %d", &value);
+		if(ret != 1) {
+			std::cerr << "Error: couldn't load training dataset" << std::endl;
+			return -1;
+		}
 		for(int j = 0; j < 2; j++) {
 			l[i][j] = ((value == j) ? 1.0 : 0.0);
 		}
