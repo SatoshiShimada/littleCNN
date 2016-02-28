@@ -246,7 +246,7 @@ float *ConvolutionLayer::backward(float *inputs, float *delta, float *prevOut)
 		deltaBias[k] = 0.0;
 		for(int i = 0; i < outputHeight; i++) {
 			for(int j = 0; j < outputWidth; j++) {
-				int index = k * (outputHeight * outputWidth) + i * outputWidth * j;
+				int index = k * (outputHeight * outputWidth) + i * outputWidth + j;
 				float d = delta[index] * this->diff(outputs[index] + bias[k]);
 				deltaBias[k] += d;
 				for(int c = 0; c < inputChannels; c++) {
