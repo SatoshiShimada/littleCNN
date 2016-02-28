@@ -21,7 +21,6 @@ void Network::appendLayer(Layer *layer)
 void Network::train(float **trainingData, float **labelData, int trainingDataCount, int epoch)
 {
 	float **z = new float *[layers.size()+1];
-	//float *label = new float[layers[layers.size()-1]->outputNum];
 	float *label;
 	float **delta;
 	float *output;
@@ -29,6 +28,8 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 
 	for(int ep = 0; ep < epoch; ep++) {
 		for(int i = 0; i < trainingDataCount; i++) {
+			if(i % 1000 == 0)
+				std::cerr << "images: [" << i << " / " << trainingDataCount << "]" << std::endl;
 			/* feed forward */
 			z[0] = trainingData[i];
 			label = labelData[i];
@@ -71,7 +72,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 					if(maxIndex == labelIndex)
 						acc++;
 				}
-				printf("accuracy [%d / %d]\n", acc, trainingDataCount);
+				printf("Accuracy [Epoch: %d] [%d / %d]\n", ep, acc, trainingDataCount);
 				printf("\t%f%%\n", acc * 100.0 / trainingDataCount);
 			}
 			if(testFlag) {
@@ -91,7 +92,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 					if(maxIndex == labelIndex)
 						acc++;
 				}
-				printf("test [%d / %d]\n", acc, testDataNum);
+				printf("Test [Epoch: %d] [%d / %d]\n", ep, acc, testDataNum);
 				printf("\t%f%%\n", acc * 100.0 / testDataNum);
 			}
 		}
@@ -152,28 +153,31 @@ void Network::saveParameters(char *filename)
 	if(!fp) return;
 
 	for(int i = 0; i < layerNum; i++) {
-		int in = layers[i]->inputNum;
-		int out = layers[i]->outputNum;
+		bool flag = false;
+		int weightCnt = layers[i]->weightSize;
+		int biasCnt   = layers[i]->biasSize;
 		float *w = layers[i]->getWeight();
 		float *b = layers[i]->getBias();
-		fprintf(fp, "%d,%d\n", in, out);
+
+		if(weightCnt == 0 && biasCnt == 0)
+			continue;
 		/* save weights */
-		int flag = 0;
-		for(int cntOut = 0; cntOut < out; cntOut++) {
-			for(int cntIn = 0; cntIn < in; cntIn++) {
-				if(flag)
-					fprintf(fp, ",");
-				fprintf(fp, "%f", w[cntOut * in + cntIn]);
-				flag = 1;
-			}
-			fprintf(fp, "\n");
-			flag = 0;
+		for(int cnt = 0; cnt < weightCnt; cnt++) {
+			if(flag)
+				fprintf(fp, ",");
+			fprintf(fp, "%f", w[cnt]);
+			flag = true;
 		}
+		fprintf(fp, "\n");
 		/* save biases */
-		for(int cntOut = 0; cntOut < out; cntOut++) {
-			fprintf(fp, "%f", b[cntOut]);
-			fprintf(fp, "\n");
+		flag = false;
+		for(int cnt = 0; cnt < biasCnt; cnt++) {
+			if(flag)
+				fprintf(fp, ",");
+			fprintf(fp, "%f", b[cnt]);
+			flag = true;
 		}
+		fprintf(fp, "\n");
 	}
 	fclose(fp);
 }
@@ -181,38 +185,59 @@ void Network::saveParameters(char *filename)
 void Network::loadParameters(char *filename)
 {
 	int layerNum = layers.size();
+	int ret;
 	FILE *fp;
-	int readIn, readOut;
 
 	fp = fopen(filename, "r");
 	if(!fp) return;
 
 	for(int i = 0; i < layerNum; i++) {
-		int in = layers[i]->inputNum;
-		int out = layers[i]->outputNum;
+		bool flag = false;
+		int weightCnt = layers[i]->weightSize;
+		int biasCnt   = layers[i]->biasSize;
 		float *w = layers[i]->getWeight();
 		float *b = layers[i]->getBias();
-		fscanf(fp, "%d,%d\n", &readIn, &readOut);
-		if(readIn != in || readOut != out)
-			return;
-		/* save weights */
-		int flag = 0;
+
+		if(weightCnt == 0 && biasCnt == 0)
+			continue;
+		/* load weights */
 		char buf;
-		for(int cntOut = 0; cntOut < out; cntOut++) {
-			for(int cntIn = 0; cntIn < in; cntIn++) {
-				if(flag) {
-					fscanf(fp, "%c", &buf);
+		for(int cnt = 0; cnt < weightCnt; cnt++) {
+			if(flag) {
+				ret = fscanf(fp, "%c", &buf);
+				if(ret != 1) {
+					std::cerr << "file read error" << std::endl;
+					return;
 				}
-				fscanf(fp, "%f", (w + cntOut * in + cntIn));
-				flag = 1;
 			}
-			fscanf(fp, "%c", &buf);
-			flag = 0;
+			ret = fscanf(fp, "%f", (w + cnt));
+			if(ret != 1) {
+				std::cerr << "file read error" << std::endl;
+				return;
+			}
+			flag = true;
 		}
-		/* save biases */
-		for(int cntOut = 0; cntOut < out; cntOut++) {
-			fscanf(fp, "%f", (b + cntOut));
-			fscanf(fp, "%c", &buf);
+		/* load biases */
+		flag = false;
+		for(int cnt = 0; cnt < biasCnt; cnt++) {
+			if(flag) {
+				ret = fscanf(fp, "%c", &buf);
+				if(ret != 1) {
+					std::cerr << "file read error" << std::endl;
+					return;
+				}
+			}
+			ret = fscanf(fp, "%f", (b + cnt));
+			if(ret != 1) {
+				std::cerr << "file read error" << std::endl;
+				return;
+			}
+			flag = true;
+		}
+		ret = fscanf(fp, "%c", &buf); /* skip new line */
+		if(ret != 1) {
+			std::cerr << "file read error" << std::endl;
+			return;
 		}
 	}
 	fclose(fp);
