@@ -1,4 +1,5 @@
 
+#include <iostream>
 #include "layer.h"
 #include "../util.h"
 
@@ -9,9 +10,11 @@ FullyConnectedLayer::FullyConnectedLayer(
 	this->outputNum      = outputNum;
 	this->activationFunc = act;
 	this->lr             = learningRate;
+	this->weightSize     = inputNum * outputNum;
+	this->biasSize       = outputNum;
 
-	weight    = new float[inputNum * outputNum];
-	bias      = new float[outputNum];
+	weight    = new float[weightSize];
+	bias      = new float[biasSize];
 	outputs   = new float[outputNum];
 	activated = new float[outputNum];
 	nextDelta = new float[inputNum];
@@ -113,9 +116,11 @@ ConvolutionLayer::ConvolutionLayer(int inputWidth, int inputHeight, int inputCha
 	this->outputHeight   = inputHeight - 2 * (int)(filterHeight / 2);
 	this->activationFunc = act;
 	this->lr             = learningRate;
+	this->weightSize     = filterNum * inputChannels * filterHeight * filterWidth;
+	this->biasSize       = filterNum;
 
-	this->weight      = new float[(filterNum * inputChannels * filterHeight * filterWidth)];
-	this->bias        = new float[filterNum];
+	this->weight      = new float[weightSize];
+	this->bias        = new float[biasSize];
 	this->outputs     = new float[(filterNum * outputHeight * outputWidth)];
 	this->activated   = new float[(filterNum * outputHeight * outputWidth)];
 	this->nextDelta   = new float[(filterNum * inputHeight * inputWidth)];
@@ -168,11 +173,14 @@ float *ConvolutionLayer::forward(float *inputs)
 void ConvolutionLayer::backward(float *inputs, float *delta)
 {
 	/* calculate gradient */
+	for(int i = 0; i < (filterNum * inputChannels * filterHeight * filterWidth); i++) {
+		deltaWeight[i] = 0.0;
+	}
 	for(int k = 0; k < filterNum; k++) {
 		deltaBias[k] = 0.0;
 		for(int i = 0; i < outputHeight; i++) {
 			for(int j = 0; j < outputWidth; j++) {
-				int index = k * (outputHeight * outputWidth) + i * outputWidth * j;
+				int index = k * (outputHeight * outputWidth) + i * outputWidth + j;
 				float d = delta[index] * this->diff(outputs[index] + bias[k]);
 				deltaBias[k] += d;
 				for(int c = 0; c < inputChannels; c++) {
@@ -231,6 +239,9 @@ float *ConvolutionLayer::backward(float *inputs, float *delta, float *prevOut)
 	}
 
 	/* calculate gradient */
+	for(int i = 0; i < (filterNum * inputChannels * filterHeight * filterWidth); i++) {
+		deltaWeight[i] = 0.0;
+	}
 	for(int k = 0; k < filterNum; k++) {
 		deltaBias[k] = 0.0;
 		for(int i = 0; i < outputHeight; i++) {
@@ -292,5 +303,122 @@ float ConvolutionLayer::apply(float input)
 float ConvolutionLayer::diff(float input)
 {
 	return this->activationFunc->diff(input);
+}
+
+MaxPoolingLayer::MaxPoolingLayer(int inputWidth, int inputHeight, int inputChannels, int kernelWidth, int kernelHeight, int stride)
+{
+	this->inputWidth    = inputWidth;
+	this->inputHeight   = inputHeight;
+	this->inputChannels = inputChannels;
+	this->kernelWidth   = kernelWidth;
+	this->kernelHeight  = kernelHeight;
+	this->stride        = stride;
+	this->outputWidth   = (int)((inputWidth - 1) / stride) + 1;
+	this->outputHeight  = (int)((inputHeight - 1) / stride) + 1;
+	this->weightSize    = 0;
+	this->biasSize      = 0;
+
+	this->weight    = NULL;
+	this->bias      = NULL;
+	this->outputs   = new float[(outputWidth * outputHeight * inputChannels)];
+	this->activated = new float[(outputWidth * outputHeight * inputChannels)];
+	this->nextDelta = new float[(inputWidth * inputHeight * inputChannels)];
+}
+
+MaxPoolingLayer::MaxPoolingLayer(int inputWidth, int inputHeight, int inputChannels, int kernelWidth, int kernelHeight)
+{
+	this->inputWidth    = inputWidth;
+	this->inputHeight   = inputHeight;
+	this->inputChannels = inputChannels;
+	this->kernelWidth   = kernelWidth;
+	this->kernelHeight  = kernelHeight;
+	this->stride        = 2;
+	this->outputWidth   = (int)((inputWidth - 1) / stride) + 1;
+	this->outputHeight  = (int)((inputHeight - 1) / stride) + 1;
+	this->weightSize    = 0;
+	this->biasSize      = 0;
+
+	this->weight    = NULL;
+	this->bias      = NULL;
+	this->outputs   = new float[(outputWidth * outputHeight * inputChannels)];
+	this->activated = new float[(outputWidth * outputHeight * inputChannels)];
+	this->nextDelta = new float[(inputWidth * inputHeight * inputChannels)];
+}
+
+MaxPoolingLayer::~MaxPoolingLayer()
+{
+	delete outputs;
+	delete activated;
+	delete nextDelta;
+}
+
+float *MaxPoolingLayer::forward(float *inputs)
+{
+	for(int c = 0; c < inputChannels; c++) {
+		for(int i = 0; i < outputHeight; i++) {
+			for(int j = 0; j < outputWidth; j++) {
+				float maxValue = inputs[c * (inputHeight * inputWidth) + (i * kernelHeight) * inputWidth + (j * kernelWidth)];
+				for(int s = 0; s < kernelHeight; s++) {
+					for(int t = 0; t < kernelWidth; t++) {
+						float value = inputs[c * (inputHeight * inputWidth) + (i * kernelHeight + s) * inputWidth + (j * kernelWidth + t)];
+						if(maxValue < value)
+							maxValue = value;
+					}
+				}
+				outputs[c * (outputHeight * outputWidth) + i * outputWidth + j] = maxValue;
+				activated[c * (outputHeight * outputWidth) + i * outputWidth + j] = this->apply(maxValue);
+			}
+		}
+	}
+	return this->activated;
+}
+
+void MaxPoolingLayer::backward(float *inputs, float *delta)
+{
+	return;
+}
+
+float *MaxPoolingLayer::backward(float *inputs, float *delta, float *prevOut)
+{
+	for(int c = 0; c < inputChannels; c++) {
+		for(int i = 0; i < outputHeight; i++) {
+			for(int j = 0; j < outputWidth; j++) {
+				for(int s = 0; s < kernelHeight; s++) {
+					for(int t = 0; t < kernelWidth; t++) {
+						if(inputs[c * (outputHeight * outputWidth) + (i * kernelHeight + s) * outputWidth + (j * kernelWidth + t)] == outputs[c * (inputHeight * inputWidth) + i * inputWidth + j])
+							nextDelta[c * (outputHeight * outputWidth) + (i * kernelHeight + s) * outputWidth + (j * kernelWidth + t)] = delta[c * (outputHeight * outputWidth) + i * outputWidth + j];
+					}
+				}
+			}
+		}
+	}
+	return this->nextDelta;
+}
+
+float *MaxPoolingLayer::getOutput(void)
+{
+	return this->outputs;
+}
+
+float MaxPoolingLayer::apply(float input)
+{
+	//return this->activationFunc->apply(input);
+	return input;
+}
+
+float MaxPoolingLayer::diff(float input)
+{
+	//return this->activationFunc->diff(input);
+	return 1.0;
+}
+
+float *MaxPoolingLayer::getWeight(void)
+{
+	return this->weight;
+}
+
+float *MaxPoolingLayer::getBias(void)
+{
+	return this->bias;
 }
 
