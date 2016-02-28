@@ -162,7 +162,7 @@ float *ConvolutionLayer::forward(float *inputs)
 		for(int i = 0; i < outputHeight; i++) {
 			for(int j = 0; j < outputWidth; j++) {
 				int index = k * (outputHeight * outputWidth) + i * outputWidth + j;
-				activated[k * (outputHeight * outputWidth) + i * outputWidth + j] = this->apply(outputs[k * (outputHeight * outputWidth) + i * outputWidth + j]);
+				activated[index] = this->apply(outputs[index]);
 			}
 		}
 	}
@@ -181,7 +181,7 @@ void ConvolutionLayer::backward(float *inputs, float *delta)
 		for(int i = 0; i < outputHeight; i++) {
 			for(int j = 0; j < outputWidth; j++) {
 				int index = k * (outputHeight * outputWidth) + i * outputWidth + j;
-				float d = delta[index] * this->diff(outputs[index] + bias[k]);
+				float d = delta[index] * this->diff(outputs[index]);
 				deltaBias[k] += d;
 				for(int c = 0; c < inputChannels; c++) {
 					for(int s = 0; s < filterHeight; s++) {
@@ -189,7 +189,7 @@ void ConvolutionLayer::backward(float *inputs, float *delta)
 							int index1 =
 								k * (inputChannels * filterHeight * filterWidth) + c * (filterHeight * filterWidth) + s * filterWidth + t;
 							int index2 =
-								c * (inputHeight * inputWidth) + (i+s) * inputHeight + (j+t);
+								c * (inputHeight * inputWidth) + (i+s) * inputWidth + (j+t);
 							deltaWeight[index1] += d * inputs[index2];
 						}
 					}
@@ -229,7 +229,7 @@ float *ConvolutionLayer::backward(float *inputs, float *delta, float *prevOut)
 								continue;
 							int index = k * (outputHeight * outputWidth) + index1 * outputWidth + index2;
 							nextDelta[indexDelta] +=
-								delta[index] * this->diff(outputs[index] + bias[k]) *
+								delta[index] * this->diff(outputs[index]) *
 								weight[k * (inputChannels * filterHeight * filterWidth) + c * (filterHeight * filterWidth) + s * filterWidth + t];
 						}
 					}
@@ -247,7 +247,7 @@ float *ConvolutionLayer::backward(float *inputs, float *delta, float *prevOut)
 		for(int i = 0; i < outputHeight; i++) {
 			for(int j = 0; j < outputWidth; j++) {
 				int index = k * (outputHeight * outputWidth) + i * outputWidth + j;
-				float d = delta[index] * this->diff(outputs[index] + bias[k]);
+				float d = delta[index] * this->diff(outputs[index]);
 				deltaBias[k] += d;
 				for(int c = 0; c < inputChannels; c++) {
 					for(int s = 0; s < filterHeight; s++) {
