@@ -3,20 +3,22 @@
 
 class Layer {
 private:
+	int weightSize;
+	int biasSize;
 	act_T *activationFunc;
 public:
 	int inputNum;
 	int outputNum;
-	int weightSize;
-	int biasSize;
 	virtual float *forward(float *) = 0;
 	virtual float *backward(float *, float *, float *) = 0;
 	virtual void   backward(float *, float *) = 0;
 	virtual float *getOutput(void) = 0;
-	virtual float apply(float) = 0;
-	virtual float diff(float) = 0;
+	virtual float  apply(float) = 0;
+	virtual float  diff(float) = 0;
 	virtual float *getWeight(void) = 0;
 	virtual float *getBias(void) = 0;
+	virtual int    getWeightSize(void) = 0;
+	virtual int    getBiasSize(void) = 0;
 };
 
 class LearningLayer {
@@ -32,6 +34,8 @@ public:
 
 class FullyConnectedLayer : public Layer, public LearningLayer {
 private:
+	int weightSize;
+	int biasSize;
 	float *weight;
 	float *bias;
 	float *outputs;
@@ -48,22 +52,14 @@ public:
 	float *getWeight(void);
 	float *getBias(void);
 	float *getOutput(void);
-	float apply(float);
-	float diff(float);
-	int weightSize;
-	int biasSize;
+	float  apply(float);
+	float  diff(float);
+	int    getWeightSize(void);
+	int    getBiasSize(void);
 };
 
 class ConvolutionLayer : public Layer, public LearningLayer {
 private:
-	float *weight;
-	float *bias;
-	float *outputs;
-	float *activated;
-	float *nextDelta;
-	float *deltaWeight;
-	float *deltaBias;
-	float lr;
 	int inputWidth;
 	int inputHeight;
 	int inputChannels;
@@ -72,6 +68,16 @@ private:
 	int filterNum;
 	int outputWidth;
 	int outputHeight;
+	int weightSize;
+	int biasSize;
+	float *weight;
+	float *bias;
+	float *outputs;
+	float *activated;
+	float *nextDelta;
+	float *deltaWeight;
+	float *deltaBias;
+	float lr;
 	act_T *activationFunc;
 public:
 	ConvolutionLayer(int, int, int, int, int, int, act_T *, float);
@@ -82,19 +88,14 @@ public:
 	float *getWeight(void);
 	float *getBias(void);
 	float *getOutput(void);
-	float apply(float);
-	float diff(float);
-	int weightSize;
-	int biasSize;
+	float  apply(float);
+	float  diff(float);
+	int    getWeightSize(void);
+	int    getBiasSize(void);
 };
 
 class MaxPoolingLayer : public Layer {
 private:
-	float *weight;
-	float *bias;
-	float *outputs;
-	float *activated;
-	float *nextDelta;
 	int inputWidth;
 	int inputHeight;
 	int inputChannels;
@@ -103,6 +104,13 @@ private:
 	int outputWidth;
 	int outputHeight;
 	int stride;
+	int weightSize;
+	int biasSize;
+	float *weight;
+	float *bias;
+	float *outputs;
+	float *activated;
+	float *nextDelta;
 	act_T *activationFunc;
 public:
 	MaxPoolingLayer(int, int, int, int, int, int);
@@ -112,11 +120,11 @@ public:
 	float *backward(float *, float *, float *);
 	void   backward(float *, float *);
 	float *getOutput(void);
-	float apply(float);
-	float diff(float);
+	float  apply(float);
+	float  diff(float);
 	float *getWeight(void);
 	float *getBias(void);
-	int weightSize;
-	int biasSize;
+	int    getWeightSize(void);
+	int    getBiasSize(void);
 };
 

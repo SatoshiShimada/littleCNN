@@ -104,6 +104,16 @@ float FullyConnectedLayer::diff(float input)
 	return this->activationFunc->diff(input);
 }
 
+int FullyConnectedLayer::getWeightSize(void)
+{
+	return this->weightSize;
+}
+
+int FullyConnectedLayer::getBiasSize(void)
+{
+	return this->biasSize;
+}
+
 ConvolutionLayer::ConvolutionLayer(int inputWidth, int inputHeight, int inputChannels, int filterWidth, int filterHeight, int filterNum, act_T *act, float learningRate)
 {
 	this->inputWidth     = inputWidth;
@@ -173,7 +183,7 @@ float *ConvolutionLayer::forward(float *inputs)
 void ConvolutionLayer::backward(float *inputs, float *delta)
 {
 	/* calculate gradient */
-	for(int i = 0; i < (filterNum * inputChannels * filterHeight * filterWidth); i++) {
+	for(int i = 0; i < weightSize; i++) {
 		deltaWeight[i] = 0.0;
 	}
 	for(int k = 0; k < filterNum; k++) {
@@ -239,7 +249,7 @@ float *ConvolutionLayer::backward(float *inputs, float *delta, float *prevOut)
 	}
 
 	/* calculate gradient */
-	for(int i = 0; i < (filterNum * inputChannels * filterHeight * filterWidth); i++) {
+	for(int i = 0; i < weightSize; i++) {
 		deltaWeight[i] = 0.0;
 	}
 	for(int k = 0; k < filterNum; k++) {
@@ -303,6 +313,16 @@ float ConvolutionLayer::apply(float input)
 float ConvolutionLayer::diff(float input)
 {
 	return this->activationFunc->diff(input);
+}
+
+int ConvolutionLayer::getWeightSize(void)
+{
+	return this->weightSize;
+}
+
+int ConvolutionLayer::getBiasSize(void)
+{
+	return this->biasSize;
 }
 
 MaxPoolingLayer::MaxPoolingLayer(int inputWidth, int inputHeight, int inputChannels, int kernelWidth, int kernelHeight, int stride)
@@ -420,5 +440,15 @@ float *MaxPoolingLayer::getWeight(void)
 float *MaxPoolingLayer::getBias(void)
 {
 	return this->bias;
+}
+
+int MaxPoolingLayer::getWeightSize(void)
+{
+	return this->weightSize;
+}
+
+int MaxPoolingLayer::getBiasSize(void)
+{
+	return this->biasSize;
 }
 

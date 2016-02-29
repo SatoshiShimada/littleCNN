@@ -28,8 +28,27 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 
 	for(int ep = 0; ep < epoch; ep++) {
 		for(int i = 0; i < trainingDataCount; i++) {
-			if(i % 1000 == 0)
+			if(i % 1000 == 0) {
 				std::cerr << "images: [" << i << " / " << trainingDataCount << "]" << std::endl;
+				int acc = 0;
+				for(int i = 0; i < testDataNum; i++) {
+					/* feed forward */
+					z[0] = testData[i];
+					for(int n = 0; n < layerNum; n++) {
+						z[n+1] = layers[n]->forward(z[n]);
+					}
+					std::vector<float> result(z[layerNum], z[layerNum]+10);
+					std::vector<float>::iterator maxIt = std::max_element(result.begin(), result.end());
+					int maxIndex = std::distance(result.begin(), maxIt);
+					std::vector<float> label(testDataLabel[i], testDataLabel[i] + 10);
+					std::vector<float>::iterator maxItLabel = std::max_element(label.begin(), label.end());
+					int labelIndex = std::distance(label.begin(), maxItLabel);
+					if(maxIndex == labelIndex)
+						acc++;
+				}
+				printf("Test [Epoch: %d] [%d / %d]\n", ep, acc, testDataNum);
+				printf("\t%f%%\n", acc * 100.0 / testDataNum);
+			}
 			/* feed forward */
 			z[0] = trainingData[i];
 			label = labelData[i];
@@ -154,8 +173,8 @@ void Network::saveParameters(char *filename)
 
 	for(int i = 0; i < layerNum; i++) {
 		bool flag = false;
-		int weightCnt = layers[i]->weightSize;
-		int biasCnt   = layers[i]->biasSize;
+		int weightCnt = layers[i]->getWeightSize();
+		int biasCnt   = layers[i]->getBiasSize();
 		float *w = layers[i]->getWeight();
 		float *b = layers[i]->getBias();
 
@@ -180,6 +199,7 @@ void Network::saveParameters(char *filename)
 		fprintf(fp, "\n");
 	}
 	fclose(fp);
+	std::cerr << "saved parameters [" << filename << "]" << std::endl;
 }
 
 void Network::loadParameters(char *filename)
@@ -193,8 +213,8 @@ void Network::loadParameters(char *filename)
 
 	for(int i = 0; i < layerNum; i++) {
 		bool flag = false;
-		int weightCnt = layers[i]->weightSize;
-		int biasCnt   = layers[i]->biasSize;
+		int weightCnt = layers[i]->getWeightSize();
+		int biasCnt   = layers[i]->getBiasSize();
 		float *w = layers[i]->getWeight();
 		float *b = layers[i]->getBias();
 
