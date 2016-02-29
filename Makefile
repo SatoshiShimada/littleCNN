@@ -8,16 +8,34 @@ all: logic mnist conv
 	
 
 .PHONY: logic
-logic: samples/logic/main_logic.cpp network/network.cpp network/layer/layer.cpp network/activation/activation.cpp
+logic: network.o layer.o activation.o main_logic.o
 	$(CXX) $(CXXFLAGS) -o logic $^ $(LIBS)
 
 .PHONY: mnist
-mnist: samples/mnist/main_mnist.cpp network/network.cpp network/layer/layer.cpp network/activation/activation.cpp
+mnist: network.o layer.o activation.o main_mnist.o
 	$(CXX) $(CXXFLAGS) -o mnist $^ $(LIBS)
 
 .PHONY: conv
-conv: samples/mnist/main_mnist_conv.cpp network/network.cpp network/layer/layer.cpp network/activation/activation.cpp
+conv: network.o layer.o activation.o main_mnist_conv.o
 	$(CXX) $(CXXFLAGS) -o conv $^ $(LIBS)
+
+main_logic.o: samples/logic/main_logic.cpp
+	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
+
+main_mnist.o: samples/mnist/main_mnist.cpp
+	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
+
+main_mnist_conv.o: samples/mnist/main_mnist_conv.cpp
+	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
+
+network.o: network/network.cpp
+	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
+
+layer.o: network/layer/layer.cpp
+	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
+
+activation.o: network/activation/activation.cpp
+	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
 
 .PHONY: clean
 clean:
