@@ -27,9 +27,13 @@
 *.out
 *.app
 
-*.param
 logic
 mnist
+conv
+filter
+check
+*.ppm
+*.param
 *ubyte
 *.txt
 *.gz
