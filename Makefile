@@ -23,6 +23,13 @@ conv: network.o layer.o activation.o main_mnist_conv.o
 check: network.o layer.o activation.o check.o
 	$(CXX) $(CXXFLAGS) -o check $^ $(LIBS)
 
+.PHONY: filter
+filter: network.o layer.o activation.o filter.o
+	$(CXX) $(CXXFLAGS) -o filter $^ $(LIBS)
+
+filter.o: samples/mnist/filter.cpp
+	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
+
 check.o: samples/mnist/check.cpp
 	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
 
