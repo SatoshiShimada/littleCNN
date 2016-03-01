@@ -1,5 +1,5 @@
 
-#include <stdio.h>
+#include <cstdio>
 #include <iostream>
 #include <iterator>
 #include <algorithm>
@@ -261,5 +261,54 @@ void Network::loadParameters(char *filename)
 		}
 	}
 	fclose(fp);
+}
+
+void Network::visualize(float **testData, int filterNum, int inputChannels, int imageHeight, int imageWidth)
+{
+	float **z = new float *[layers.size()+1];
+	int layerNum = layers.size();
+	char filename[100];
+	FILE *fout;
+	int num = 0;
+
+	/* feed forward */
+	z[0] = testData[num];
+	for(int n = 0; n < layerNum; n++) {
+		z[n+1] = layers[n]->forward(z[n]);
+	}
+
+	float *data = z[1];
+	float minValue = data[0];
+	int count = filterNum * inputChannels * imageHeight * imageWidth;
+	for(int i = 0; i < count; i++) {
+		if(data[i] < minValue)
+			minValue = data[i];
+	}
+	float maxValue = data[0] + minValue;
+	for(int i = 0; i < count; i++) {
+		data[i] += minValue;
+		if(data[i] > maxValue)
+			maxValue = data[i];
+	}
+	float ratio = 255.0 / maxValue;
+	for(int i = 0, k = 0; k < filterNum; k++) {
+		for(int c = 0; c < inputChannels; c++) {
+			sprintf(filename, "visual-%d-%d.ppm", k, c);
+			fout = fopen(filename, "w");
+			if(!fout) {
+				std::cerr << "Error: file open" << std::endl;
+				return;
+			}
+			fprintf(fout, "P2\n# visualized image of hidden layer\n");
+			fprintf(fout, "%d %d\n255\n", imageWidth, imageHeight);
+			for(int s = 0; s < imageHeight; s++) {
+				for(int t = 0; t < imageWidth; t++) {
+					fprintf(fout, "%d ", (int)(ratio * data[i++]));
+				}
+				fprintf(fout, "\n");
+			}
+			fclose(fout);
+		}
+	}
 }
 
