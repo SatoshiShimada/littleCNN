@@ -12,7 +12,7 @@ public:
 	void setTest(float **, float **, int, int);
 	void saveParameters(char *);
 	void loadParameters(char *);
-	void visualize(float **, int, int, int, int);
+	void visualize(float **, int, int, int, int, int);
 private:
 	std::vector<Layer *> layers;
 	bool testFlag;

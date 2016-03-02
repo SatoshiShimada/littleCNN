@@ -28,7 +28,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 
 	for(int ep = 0; ep < epoch; ep++) {
 		for(int i = 0; i < trainingDataCount; i++) {
-			if(i % 1000 == 0) {
+			if(i % 10000 == 0) {
 				std::cerr << "images: [" << i << " / " << trainingDataCount << "]" << std::endl;
 				int acc = 0;
 				for(int i = 0; i < testDataNum; i++) {
@@ -263,7 +263,7 @@ void Network::loadParameters(char *filename)
 	fclose(fp);
 }
 
-void Network::visualize(float **testData, int filterNum, int inputChannels, int imageHeight, int imageWidth)
+void Network::visualize(float **testData, int layerIndex, int filterNum, int inputChannels, int imageHeight, int imageWidth)
 {
 	float **z = new float *[layers.size()+1];
 	int layerNum = layers.size();
@@ -277,7 +277,7 @@ void Network::visualize(float **testData, int filterNum, int inputChannels, int 
 		z[n+1] = layers[n]->forward(z[n]);
 	}
 
-	float *data = z[1];
+	float *data = z[layerIndex+1];
 	float minValue = data[0];
 	int count = filterNum * inputChannels * imageHeight * imageWidth;
 	for(int i = 0; i < count; i++) {
@@ -293,7 +293,7 @@ void Network::visualize(float **testData, int filterNum, int inputChannels, int 
 	float ratio = 255.0 / maxValue;
 	for(int i = 0, k = 0; k < filterNum; k++) {
 		for(int c = 0; c < inputChannels; c++) {
-			sprintf(filename, "visual-%d-%d.ppm", k, c);
+			sprintf(filename, "visual-%d-%d-%d.ppm", layerIndex, k, c);
 			fout = fopen(filename, "w");
 			if(!fout) {
 				std::cerr << "Error: file open" << std::endl;
