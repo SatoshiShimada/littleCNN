@@ -19,10 +19,13 @@ FullyConnectedLayer::FullyConnectedLayer(
 	activated = new float[outputNum];
 	nextDelta = new float[inputNum];
 
-	randomRange(weight, inputNum * outputNum);
-	for(int i = 0; i < outputNum; i++) {
-		bias[i] = 0.0;
+	/* initialize the weights with random number */
+	randomRange(this->weight, weightSize);
+	/* initialize the biases with zero */
+	for(int i = 0; i < biasSize; i++) {
+		this->bias[i] = 0.0;
 	}
+	/* initialize the biases with random number */
 	//randomRange(bias, outputNum);
 }
 
@@ -136,6 +139,13 @@ ConvolutionLayer::ConvolutionLayer(int inputWidth, int inputHeight, int inputCha
 	this->nextDelta   = new float[(filterNum * inputHeight * inputWidth)];
 	this->deltaWeight = new float[(filterNum * inputChannels * filterHeight * filterWidth)];
 	this->deltaBias   = new float[filterNum];
+
+	/* initialize the weights with random number */
+	randomRange(this->weight, weightSize);
+	/* initialize the biases with zero */
+	for(int i = 0; i < biasSize; i++) {
+		this->bias[i] = 0.0;
+	}
 }
 
 ConvolutionLayer::~ConvolutionLayer()
