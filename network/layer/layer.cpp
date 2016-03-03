@@ -378,9 +378,18 @@ float *MaxPoolingLayer::forward(float *inputs)
 		for(int i = 0; i < outputHeight; i++) {
 			for(int j = 0; j < outputWidth; j++) {
 				float maxValue = inputs[c * (inputHeight * inputWidth) + (i * kernelHeight) * inputWidth + (j * kernelWidth)];
-				for(int s = 0; s < kernelHeight; s++) {
-					for(int t = 0; t < kernelWidth; t++) {
-						float value = inputs[c * (inputHeight * inputWidth) + (i * kernelHeight + s) * inputWidth + (j * kernelWidth + t)];
+				for(int s = -(kernelHeight / 2); s <= (kernelHeight / 2); s++) {
+					for(int t = -(kernelWidth / 2); t <= (kernelWidth / 2); t++) {
+						float value;
+						if(((i * stride + s) < 0) ||
+						   ((i * stride + s) >= inputHeight) ||
+						   ((j * stride + t) < 0) ||
+						   ((j * stride + t) >= inputWidth)) {
+							value = 0.0;
+						} else {
+							//value = inputs[c * (inputHeight * inputWidth) + (i * kernelHeight + s) * inputWidth + (j * kernelWidth + t)];
+							value = inputs[c * (inputHeight * inputWidth) + (i * stride + s) * inputWidth + (j * stride + t)];
+						}
 						if(maxValue < value)
 							maxValue = value;
 					}
