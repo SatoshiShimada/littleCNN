@@ -1,5 +1,6 @@
 
 #include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <iterator>
 #include <algorithm>
@@ -211,6 +212,7 @@ void Network::loadParameters(char *filename)
 	fp = fopen(filename, "r");
 	if(!fp) return;
 
+	layerNum = 1;
 	for(int i = 0; i < layerNum; i++) {
 		bool flag = false;
 		int weightCnt = layers[i]->getWeightSize();
@@ -269,7 +271,7 @@ void Network::visualize(float **testData, int layerIndex, int filterNum, int inp
 	int layerNum = layers.size();
 	char filename[100];
 	FILE *fout;
-	int num = 0;
+	int num = 0; // data index
 
 	/* feed forward */
 	z[0] = testData[num];
@@ -284,9 +286,9 @@ void Network::visualize(float **testData, int layerIndex, int filterNum, int inp
 		if(data[i] < minValue)
 			minValue = data[i];
 	}
-	float maxValue = data[0] + minValue;
+	float maxValue = data[0] - minValue;
 	for(int i = 0; i < count; i++) {
-		data[i] += minValue;
+		data[i] -= minValue;
 		if(data[i] > maxValue)
 			maxValue = data[i];
 	}
