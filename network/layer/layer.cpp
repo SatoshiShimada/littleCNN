@@ -159,6 +159,53 @@ ConvolutionLayer::~ConvolutionLayer()
 	delete this->deltaBias;
 }
 
+float *ConvolutionLayer::forward(float *inputs, int padding_size)
+{
+	float *ret;
+	float *padding_input = new float[inputChannels * inputHeight * inputWidth];
+	int i;
+	int padHeight = inputHeight - padding_size * 2;
+	int padWidth = inputWidth - padding_size * 2;
+	for(int c = 0; c < inputChannels; c++) {
+		for(i = 0; i < padding_size; i++) {
+			for(int j = 0; j < inputWidth; j++) {
+				padding_input[c * (inputHeight * inputWidth) + i * (inputWidth) + j] = 0.0;
+			}
+		}
+		for(; i < padHeight + padding_size; i++) {
+			for(int n = 0; n < padding_size; n++) {
+				padding_input[c * (inputHeight * inputWidth) + i * inputWidth + n] = 0.0;
+			}
+			for(int j = 0; j < padWidth; j++) {
+				padding_input[c * (inputHeight * inputWidth) + i * inputWidth + (j + padding_size)] = inputs[c * (padHeight * padWidth) + (i - padding_size) * padWidth + j];
+			}
+			for(int n = padding_size + padWidth; n < inputWidth; n++) {
+				padding_input[c * (inputHeight * inputWidth) + i * inputWidth + n] = 0.0;
+			}
+		}
+		for(; i < inputHeight; i++) {
+			for(int j = 0; j < inputWidth; j++) {
+				padding_input[c * (inputHeight * inputWidth) + i * (inputWidth) + j] = 0.0;
+			}
+		}
+	}
+	FILE *fp;
+	fp = fopen("out.ppm", "wb");
+	fprintf(fp, "P3\n42 42\n255\n");
+	for(int y = 0; y < inputHeight; y++) {
+		for(int x = 0; x < inputWidth; x++) {
+			for(int c = 0; c < inputChannels; c++) {
+				fprintf(fp, "%d ", (int)(padding_input[c * (inputHeight * inputWidth) + y * inputWidth + x] * 255.0));
+			}
+		}
+		fprintf(fp, "\n");
+	}
+
+	ret = this->forward(padding_input);
+	delete padding_input;
+	return ret;
+}
+
 float *ConvolutionLayer::forward(float *inputs)
 {
 	for(int k = 0; k < filterNum; k++) {

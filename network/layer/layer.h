@@ -83,6 +83,7 @@ public:
 	ConvolutionLayer(int, int, int, int, int, int, act_T *, float);
 	~ConvolutionLayer();
 	float *forward(float *);
+	float *forward(float *, int);
 	float *backward(float *, float *, float *);
 	void   backward(float *, float *);
 	float *getWeight(void);
