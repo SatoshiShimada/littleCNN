@@ -189,17 +189,6 @@ float *ConvolutionLayer::forward(float *inputs, int padding_size)
 			}
 		}
 	}
-	FILE *fp;
-	fp = fopen("out.ppm", "wb");
-	fprintf(fp, "P3\n42 42\n255\n");
-	for(int y = 0; y < inputHeight; y++) {
-		for(int x = 0; x < inputWidth; x++) {
-			for(int c = 0; c < inputChannels; c++) {
-				fprintf(fp, "%d ", (int)(padding_input[c * (inputHeight * inputWidth) + y * inputWidth + x] * 255.0));
-			}
-		}
-		fprintf(fp, "\n");
-	}
 
 	ret = this->forward(padding_input);
 	delete padding_input;
