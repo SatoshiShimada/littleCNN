@@ -1,5 +1,8 @@
 
 #include "layer/layer.h"
+#include "layer/fully_connected.h"
+#include "layer/convolution.h"
+#include "layer/max_pooling.h"
 #include <vector>
 
 class Network {

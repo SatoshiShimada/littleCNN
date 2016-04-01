@@ -1,4 +1,7 @@
 
+#ifndef __LAYER_H__
+#define __LAYER_H__
+
 #include "../activation/activation.h"
 
 class Layer {
@@ -32,100 +35,5 @@ public:
 	virtual float *getBias(void) = 0;
 };
 
-class FullyConnectedLayer : public Layer, public LearningLayer {
-private:
-	int weightSize;
-	int biasSize;
-	float *weight;
-	float *bias;
-	float *outputs;
-	float *activated;
-	float *nextDelta;
-	float lr;
-	act_T *activationFunc;
-public:
-	FullyConnectedLayer(int, int, act_T *, float);
-	~FullyConnectedLayer();
-	float *forward(float *);
-	float *backward(float *, float *, float *);
-	void   backward(float *, float *);
-	float *getWeight(void);
-	float *getBias(void);
-	float *getOutput(void);
-	float  apply(float);
-	float  diff(float);
-	int    getWeightSize(void);
-	int    getBiasSize(void);
-};
-
-class ConvolutionLayer : public Layer, public LearningLayer {
-private:
-	int inputWidth;
-	int inputHeight;
-	int inputChannels;
-	int filterWidth;
-	int filterHeight;
-	int filterNum;
-	int outputWidth;
-	int outputHeight;
-	int weightSize;
-	int biasSize;
-	float *weight;
-	float *bias;
-	float *outputs;
-	float *activated;
-	float *nextDelta;
-	float *deltaWeight;
-	float *deltaBias;
-	float lr;
-	act_T *activationFunc;
-public:
-	ConvolutionLayer(int, int, int, int, int, int, act_T *, float);
-	~ConvolutionLayer();
-	float *forward(float *);
-	float *forward(float *, int);
-	float *backward(float *, float *, float *);
-	void   backward(float *, float *);
-	float *getWeight(void);
-	float *getBias(void);
-	float *getOutput(void);
-	float  apply(float);
-	float  diff(float);
-	int    getWeightSize(void);
-	int    getBiasSize(void);
-};
-
-class MaxPoolingLayer : public Layer {
-private:
-	int inputWidth;
-	int inputHeight;
-	int inputChannels;
-	int kernelWidth;
-	int kernelHeight;
-	int outputWidth;
-	int outputHeight;
-	int stride;
-	int weightSize;
-	int biasSize;
-	float *weight;
-	float *bias;
-	float *outputs;
-	float *activated;
-	float *nextDelta;
-	act_T *activationFunc;
-public:
-	MaxPoolingLayer(int, int, int, int, int, int);
-	MaxPoolingLayer(int, int, int, int, int);
-	~MaxPoolingLayer();
-	float *forward(float *);
-	float *backward(float *, float *, float *);
-	void   backward(float *, float *);
-	float *getOutput(void);
-	float  apply(float);
-	float  diff(float);
-	float *getWeight(void);
-	float *getBias(void);
-	int    getWeightSize(void);
-	int    getBiasSize(void);
-};
+#endif // __LAYER_H__
 

@@ -8,23 +8,23 @@ all: logic mnist conv
 	
 
 .PHONY: logic
-logic: network.o layer.o activation.o main_logic.o
+logic: network.o fully_connected.o activation.o main_logic.o util.o
 	$(CXX) $(CXXFLAGS) -o logic $^ $(LIBS)
 
 .PHONY: mnist
-mnist: network.o layer.o activation.o main_mnist.o
+mnist: network.o fully_connected.o activation.o main_mnist.o util.o
 	$(CXX) $(CXXFLAGS) -o mnist $^ $(LIBS)
 
 .PHONY: conv
-conv: network.o layer.o activation.o main_mnist_conv.o
+conv: network.o fully_connected.o convolution.o max_pooling.o activation.o main_mnist_conv.o util.o
 	$(CXX) $(CXXFLAGS) -o conv $^ $(LIBS)
 
 .PHONY: check
-check: network.o layer.o activation.o check.o
+check: network.o fully_connected.o convolution.o max_pooling.o activation.o check.o util.o
 	$(CXX) $(CXXFLAGS) -o check $^ $(LIBS)
 
 .PHONY: filter
-filter: network.o layer.o activation.o filter.o
+filter: network.o fully_connected.o convolution.o max_pooling.o activation.o filter.o util.o
 	$(CXX) $(CXXFLAGS) -o filter $^ $(LIBS)
 
 filter.o: samples/mnist/filter.cpp
@@ -45,10 +45,19 @@ main_mnist_conv.o: samples/mnist/main_mnist_conv.cpp
 network.o: network/network.cpp
 	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
 
-layer.o: network/layer/layer.cpp
+fully_connected.o: network/layer/fully_connected.cpp
+	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
+
+convolution.o: network/layer/convolution.cpp
+	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
+
+max_pooling.o: network/layer/max_pooling.cpp
 	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
 
 activation.o: network/activation/activation.cpp
+	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
+
+util.o: network/util.cpp
 	$(CXX) $(CXXFLAGS) -c $^ $(LIBS)
 
 .PHONY: clean
