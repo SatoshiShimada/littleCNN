@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	mnist sample network
+	fully-connected layer only
+-->
+<littleCNN>
+	<network>
+		<name>mnist-fullyconnected-layer-only</name>
+		<layer>
+			<type>fully</type>
+			<inputNum>784</inputNum>
+			<outputNum>100</outputNum>
+			<activation>logistic</activation>
+			<learningRate>0.001</learningRate>
+		</layer>
+		<layer>
+			<type>fully</type>
+			<inputNum>100</inputNum>
+			<outputNum>10</outputNum>
+			<activation>logistic</activation>
+			<learningRate>0.001</learningRate>
+		</layer>
+	</network>
+	<data>
+		<loadparameter>parameters/mnist/100.param</loadparameter>
+		<saveparameter>parameters/mnist/200.param</saveparameter>
+		<epochs>50</epochs>
+		<trainingDataImage>dataset/mnist/train-images.txt</trainingDataImage>
+		<trainingDataLabel>dataset/mnist/train-labels.txt</trainingDataLabel>
+		<testDataImage>dataset/mnist/test-images.txt</testDataImage>
+		<testDataLabel>dataset/mnist/test-labels.txt</testDataLabel>
+	</data>
+</littleCNN>
