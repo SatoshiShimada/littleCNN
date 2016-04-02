@@ -117,3 +117,27 @@ int FullyConnectedLayer::getBiasSize(void)
 	return this->biasSize;
 }
 
+void FullyConnectedLayer::saveParameters(const char *filename)
+{
+	FILE *fp;
+	fp = fopen(filename, "wb");
+	if(!fp) {
+		return;
+	}
+	fwrite(this->weight, sizeof(float), this->weightSize, fp);
+	fwrite(this->bias, sizeof(float), this->biasSize, fp);
+	fclose(fp);
+}
+
+void FullyConnectedLayer::loadParameters(const char *filename)
+{
+	FILE *fp;
+	fp = fopen(filename, "rb");
+	if(!fp) {
+		return;
+	}
+	fread(this->weight, sizeof(float), this->weightSize, fp);
+	fread(this->bias, sizeof(float), this->biasSize, fp);
+	fclose(fp);
+}
+

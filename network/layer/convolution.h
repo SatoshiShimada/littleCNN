@@ -40,6 +40,8 @@ public:
 	float  diff(float);
 	int    getWeightSize(void);
 	int    getBiasSize(void);
+	void   saveParameters(const char *filename);
+	void   loadParameters(const char *filename);
 };
 
 #endif // __CONVOLUTION_H__
