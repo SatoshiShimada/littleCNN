@@ -100,14 +100,7 @@ float *ConvolutionLayer::forward(float *inputs)
 			}
 		}
 	}
-	for(int k = 0; k < filterNum; k++) {
-		for(int i = 0; i < outputHeight; i++) {
-			for(int j = 0; j < outputWidth; j++) {
-				int index = k * (outputHeight * outputWidth) + i * outputWidth + j;
-				activated[index] = this->apply(outputs[index]);
-			}
-		}
-	}
+	this->apply(output, activated, filterNum * outputHeight * outputWidth);
 
 	return this->activated;
 }

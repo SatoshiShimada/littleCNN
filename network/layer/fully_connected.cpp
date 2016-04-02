@@ -46,8 +46,8 @@ float *FullyConnectedLayer::forward(float *inputs)
 			value += weight[i * inputNum + j] * inputs[j];
 		}
 		outputs[i] = value + bias[i];
-		activated[i] = activationFunc->apply(outputs[i]);
 	}
+	this->apply(outputs, activated, outputNum);
 	return activated;
 }
 
