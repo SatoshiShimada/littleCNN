@@ -27,6 +27,15 @@
 *.out
 *.app
 
+# Windows
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.opensdf
+*.sdf
+*.sln
+*.suo
+
 logic
 mnist
 conv
@@ -35,5 +44,4 @@ check
 *.ppm
 *.param
 *ubyte
-*.txt
 *.gz
