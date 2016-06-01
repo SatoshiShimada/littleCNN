@@ -73,10 +73,10 @@ float *MaxPoolingLayer::forward(float *inputs)
 					}
 				}
 				outputs[c * (outputHeight * outputWidth) + i * outputWidth + j] = maxValue;
-				activated[c * (outputHeight * outputWidth) + i * outputWidth + j] = this->apply(maxValue);
 			}
 		}
 	}
+	this->apply(outputs, activated, inputChannels * outputHeight * outputWidth);
 	return this->activated;
 }
 
@@ -107,16 +107,16 @@ float *MaxPoolingLayer::getOutput(void)
 	return this->outputs;
 }
 
-float MaxPoolingLayer::apply(float input)
+void MaxPoolingLayer::apply(float *inputs, float *outputs, int num)
 {
-	//return this->activationFunc->apply(input);
-	return input;
+	//return this->activationFunc->apply(inputs, outputs, num);
+	return;
 }
 
-float MaxPoolingLayer::diff(float input)
+void MaxPoolingLayer::diff(float *inputs, float *outputs, int num)
 {
-	//return this->activationFunc->diff(input);
-	return 1.0;
+	//return this->activationFunc->diff(inputs, outputs, num);
+	return;
 }
 
 float *MaxPoolingLayer::getWeight(void)

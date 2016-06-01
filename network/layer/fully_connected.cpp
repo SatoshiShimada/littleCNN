@@ -68,7 +68,7 @@ float *FullyConnectedLayer::backward(float *inputs, float *delta, float *prevOut
 	for(int i = 0; i < inputNum; i++) {
 		float value = 0;
 		for(int j = 0; j < outputNum; j++) {
-			value += weight[i * outputNum + j] * delta[j] * activationFunc->diff(prevOut[i]);
+			value += weight[i * outputNum + j] * delta[j];// * activationFunc->diff(prevOut[i]);
 		}
 		nextDelta[i] = value;
 	}
@@ -97,14 +97,16 @@ float *FullyConnectedLayer::getOutput(void)
 	return outputs;
 }
 
-float FullyConnectedLayer::apply(float input)
+void FullyConnectedLayer::apply(float *inputs, float *outputs, int num)
 {
-	return this->activationFunc->apply(input);
+	this->activationFunc->apply(inputs, outputs, num);
+	return;
 }
 
-float FullyConnectedLayer::diff(float input)
+void FullyConnectedLayer::diff(float *inputs, float *outputs, int num)
 {
-	return this->activationFunc->diff(input);
+	this->activationFunc->diff(inputs, outputs, num);
+	return;
 }
 
 int FullyConnectedLayer::getWeightSize(void)

@@ -16,8 +16,8 @@ public:
 	virtual float *backward(float *, float *, float *) = 0;
 	virtual void   backward(float *, float *) = 0;
 	virtual float *getOutput(void) = 0;
-	virtual float  apply(float) = 0;
-	virtual float  diff(float) = 0;
+	virtual void   apply(float *, float *, int) = 0;
+	virtual void   diff(float *, float *, int) = 0;
 	virtual float *getWeight(void) = 0;
 	virtual float *getBias(void) = 0;
 	virtual int    getWeightSize(void) = 0;

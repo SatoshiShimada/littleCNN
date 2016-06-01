@@ -100,7 +100,7 @@ float *ConvolutionLayer::forward(float *inputs)
 			}
 		}
 	}
-	this->apply(output, activated, filterNum * outputHeight * outputWidth);
+	this->apply(outputs, activated, filterNum * outputHeight * outputWidth);
 
 	return this->activated;
 }
@@ -116,7 +116,7 @@ void ConvolutionLayer::backward(float *inputs, float *delta)
 		for(int i = 0; i < outputHeight; i++) {
 			for(int j = 0; j < outputWidth; j++) {
 				int index = k * (outputHeight * outputWidth) + i * outputWidth + j;
-				float d = delta[index] * this->diff(outputs[index]);
+				float d = delta[index] ;//* this->diff(outputs[index]);
 				deltaBias[k] += d;
 				for(int c = 0; c < inputChannels; c++) {
 					for(int s = 0; s < filterHeight; s++) {
@@ -164,7 +164,7 @@ float *ConvolutionLayer::backward(float *inputs, float *delta, float *prevOut)
 								continue;
 							int index = k * (outputHeight * outputWidth) + index1 * outputWidth + index2;
 							nextDelta[indexDelta] +=
-								delta[index] * this->diff(outputs[index]) *
+								//delta[index] * this->diff(outputs[index]) *
 								weight[k * (inputChannels * filterHeight * filterWidth) + c * (filterHeight * filterWidth) + s * filterWidth + t];
 						}
 					}
@@ -182,7 +182,7 @@ float *ConvolutionLayer::backward(float *inputs, float *delta, float *prevOut)
 		for(int i = 0; i < outputHeight; i++) {
 			for(int j = 0; j < outputWidth; j++) {
 				int index = k * (outputHeight * outputWidth) + i * outputWidth + j;
-				float d = delta[index] * this->diff(outputs[index]);
+				float d = delta[index] ;//* this->diff(outputs[index]);
 				deltaBias[k] += d;
 				for(int c = 0; c < inputChannels; c++) {
 					for(int s = 0; s < filterHeight; s++) {
@@ -230,14 +230,16 @@ float *ConvolutionLayer::getOutput(void)
 	return this->outputs;
 }
 
-float ConvolutionLayer::apply(float input)
+void ConvolutionLayer::apply(float *inputs, float *outputs, int num)
 {
-	return this->activationFunc->apply(input);
+	this->activationFunc->apply(inputs, outputs, num);
+	return;
 }
 
-float ConvolutionLayer::diff(float input)
+void ConvolutionLayer::diff(float *inputs, float *outputs, int num)
 {
-	return this->activationFunc->diff(input);
+	this->activationFunc->diff(inputs, outputs, num);
+	return;
 }
 
 int ConvolutionLayer::getWeightSize(void)

@@ -63,7 +63,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 			}
 			output = layers[layerNum-1]->getOutput();
 			for(int n = 0; n < layers[layerNum-1]->outputNum; n++) {
-				delta[layerNum-1][n] = (z[layerNum][n] - label[n]) * layers[layerNum-1]->diff(output[n]);
+				delta[layerNum-1][n] = (z[layerNum][n] - label[n]) ;//* layers[layerNum-1]->diff(output[n]);
 			}
 			/* back propagation */
 			for(int n = 0; n < layerNum; n++) {

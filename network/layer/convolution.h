@@ -36,8 +36,8 @@ public:
 	float *getWeight(void);
 	float *getBias(void);
 	float *getOutput(void);
-	float  apply(float);
-	float  diff(float);
+	void   apply(float *, float *, int);
+	void   diff(float *, float *, int);
 	int    getWeightSize(void);
 	int    getBiasSize(void);
 	void   saveParameters(const char *filename);

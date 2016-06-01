@@ -31,8 +31,8 @@ public:
 	float *backward(float *, float *, float *);
 	void   backward(float *, float *);
 	float *getOutput(void);
-	float  apply(float);
-	float  diff(float);
+	void   apply(float *, float *, int);
+	void   diff(float *, float *, int);
 	float *getWeight(void);
 	float *getBias(void);
 	int    getWeightSize(void);

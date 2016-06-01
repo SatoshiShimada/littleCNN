@@ -12,7 +12,7 @@ void logistic_apply(float *inputs, float *result, int num)
 
 void logistic_diff(float *inputs, float *result, int num)
 {
-	for(int = 0; i < num; i++) {
+	for(int i = 0; i < num; i++) {
 		result[i] = (1.0 / (1.0 + expf(-inputs[i]))) * (1.0 - (1.0 / (1.0 + expf(-inputs[i]))));
 	}
 	return;
@@ -34,7 +34,7 @@ void relu_diff(float *inputs, float *result, int num)
 	return;
 }
 
-void softmax_apply(float *inputs, float *result, int num);
+void softmax_apply(float *inputs, float *result, int num)
 {
 	float buf = 0.0;
 	for(int i = 0; i < num; i++) {
@@ -47,7 +47,7 @@ void softmax_apply(float *inputs, float *result, int num);
 	return;
 }
 
-void softmax_diff(float *inputs, float *result, int num);
+void softmax_diff(float *inputs, float *result, int num)
 {
 	// TODO
 	return;
