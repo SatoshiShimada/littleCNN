@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+	logic sample network.
+	Only fully-connected layer.
+-->
+<littleCNN>
+	<network>
+		<name>logic-only-fullyconnected-layer</name>
+		<layer1>
+			<type>fully</type>
+			<inputNum>2</inputNum>
+			<outputNum>3</outputNum>
+			<activation>logistic</activation>
+			<learningRate>0.001</learningRate>
+		</layer1>
+		<layer2>
+			<type>fully</type>
+			<inputNum>3</inputNum>
+			<outputNum>2</outputNum>
+			<activation>logistic</activation>
+			<learningRate>0.001</learningRate>
+		</layer2>
+	</network>
+	<data>
+		<loadparameter></loadparameter>
+		<saveparameter>parameters/logic/200.param</saveparameter>
+		<epochs>200</epochs>
+		<trainingDataImage>dataset/logic/train-exor.txt</trainingDataImage>
+		<trainingDataLabel>dataset/logic/train-exor-label.txt</trainingDataLabel>
+		<testDataImage>dataset/logic/train-exor.txt</testDataImage>
+		<testDataLabel>dataset/logic/train-exor-label.txt</testDataLabel>
+	</data>
+</littleCNN>

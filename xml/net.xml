@@ -6,20 +6,20 @@
 <littleCNN>
 	<network>
 		<name>mnist-fullyconnected-layer-only</name>
-		<layer>
+		<layer1>
 			<type>fully</type>
 			<inputNum>784</inputNum>
 			<outputNum>100</outputNum>
 			<activation>logistic</activation>
 			<learningRate>0.001</learningRate>
-		</layer>
-		<layer>
+		</layer1>
+		<layer2>
 			<type>fully</type>
 			<inputNum>100</inputNum>
 			<outputNum>10</outputNum>
 			<activation>logistic</activation>
 			<learningRate>0.001</learningRate>
-		</layer>
+		</layer2>
 	</network>
 	<data>
 		<loadparameter>parameters/mnist/100.param</loadparameter>
