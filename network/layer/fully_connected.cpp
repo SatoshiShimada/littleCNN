@@ -46,8 +46,8 @@ float *FullyConnectedLayer::forward(float *inputs)
 			value += weight[i * inputNum + j] * inputs[j];
 		}
 		outputs[i] = value + bias[i];
-		activated[i] = activationFunc->apply(outputs[i]);
 	}
+	this->apply(outputs, activated, outputNum);
 	return activated;
 }
 
@@ -68,7 +68,7 @@ float *FullyConnectedLayer::backward(float *inputs, float *delta, float *prevOut
 	for(int i = 0; i < inputNum; i++) {
 		float value = 0;
 		for(int j = 0; j < outputNum; j++) {
-			value += weight[i * outputNum + j] * delta[j] * activationFunc->diff(prevOut[i]);
+			value += weight[i * outputNum + j] * delta[j];// * activationFunc->diff(prevOut[i]);
 		}
 		nextDelta[i] = value;
 	}
@@ -97,14 +97,16 @@ float *FullyConnectedLayer::getOutput(void)
 	return outputs;
 }
 
-float FullyConnectedLayer::apply(float input)
+void FullyConnectedLayer::apply(float *inputs, float *outputs, int num)
 {
-	return this->activationFunc->apply(input);
+	this->activationFunc->apply(inputs, outputs, num);
+	return;
 }
 
-float FullyConnectedLayer::diff(float input)
+void FullyConnectedLayer::diff(float *inputs, float *outputs, int num)
 {
-	return this->activationFunc->diff(input);
+	this->activationFunc->diff(inputs, outputs, num);
+	return;
 }
 
 int FullyConnectedLayer::getWeightSize(void)
@@ -115,5 +117,29 @@ int FullyConnectedLayer::getWeightSize(void)
 int FullyConnectedLayer::getBiasSize(void)
 {
 	return this->biasSize;
+}
+
+void FullyConnectedLayer::saveParameters(const char *filename)
+{
+	FILE *fp;
+	fp = fopen(filename, "wb");
+	if(!fp) {
+		return;
+	}
+	fwrite(this->weight, sizeof(float), this->weightSize, fp);
+	fwrite(this->bias, sizeof(float), this->biasSize, fp);
+	fclose(fp);
+}
+
+void FullyConnectedLayer::loadParameters(const char *filename)
+{
+	FILE *fp;
+	fp = fopen(filename, "rb");
+	if(!fp) {
+		return;
+	}
+	fread(this->weight, sizeof(float), this->weightSize, fp);
+	fread(this->bias, sizeof(float), this->biasSize, fp);
+	fclose(fp);
 }
 

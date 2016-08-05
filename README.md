@@ -1,32 +1,43 @@
-# littleCNN
+# littleCNN  
 Convolutional Neural Network  
-for simple, easily.
+for simple, easily.  
 
-## Usage
-clone this repository
-```
+## features  
+
+## Usage  
+First, clone this repository.  
+```shell
 git clone https://github.com/satoshishimada/littleCNN.git
 cd littleCNN
 ```
-### Samples
-* #### logic  
-  compile sample
-  ```
+
+### Samples  
+* #### In Windows7  
+ First, cmake by `CMakeList.txt` file.  
+ Second, click `ALL_BUILD.vcxproj`, then open Visual Studio.
+ Click to Build -> Build Solution(F7).
+ Finally, execute executable file in littleCNN directory.
+ 
+* #### In Linux  
+
+ * logic  
+  compile sample.  
+  ```shell
   make logic
   ```
 
-* #### mnist  
-  download dataset
-  ```
+ * mnist  
+  download dataset.  
+  ```shell
   cd dataset/mnist
   ./get_mnist.sh
   cd ../../
   ```
-  compile sample
-  ```
+  compile sample.
+  ```shell
   make mnist
   ```
 
-## Author
-Satoshi SHIMADA
-
+## Author  
+Satoshi SHIMADA  
+contact: email mylinux1204@gmail.com  

@@ -1,29 +1,55 @@
 
+#include <math.h>
 #include "activation.h"
 
-float logistic_apply(float input)
+void logistic_apply(float *inputs, float *result, int num)
 {
-	return 1.0 / (1.0 + expf(-input));
+	for(int i = 0; i < num; i++) {
+		result[i] = (1.0 / (1.0 + expf(-inputs[i])));
+	}
+	return;
 }
 
-float logistic_diff(float input)
+void logistic_diff(float *inputs, float *result, int num)
 {
-	return logistic_apply(input) * (1.0 - logistic_apply(input));
+	for(int i = 0; i < num; i++) {
+		result[i] = (1.0 / (1.0 + expf(-inputs[i]))) * (1.0 - (1.0 / (1.0 + expf(-inputs[i]))));
+	}
+	return;
 }
 
-float relu_apply(float input)
+void relu_apply(float *inputs, float *result, int num)
 {
-	if(input > 0.0)
-		return input;
-	else
-		return 0.0;
+	for(int i = 0; i < num; i++) {
+		result[i] = (inputs[i] > 0.0) ? (inputs[i]) : (0.0);
+	}
+	return;
 }
 
-float relu_diff(float input)
+void relu_diff(float *inputs, float *result, int num)
 {
-	if(input > 0.0)
-		return 1.0;
-	else
-		return 0.0;
+	for(int i = 0; i < num; i++) {
+		result[i] = (inputs[i] > 0.0) ? (1.0) : (0.0);
+	}
+	return;
+}
+
+void softmax_apply(float *inputs, float *result, int num)
+{
+	float buf = 0.0;
+	for(int i = 0; i < num; i++) {
+		buf += expf(inputs[i]);
+	}
+	if(buf = 0.0) return;
+	for(int i = 0; i < num; i++) {
+		result[i] = expf(inputs[i]) / buf;
+	}
+	return;
+}
+
+void softmax_diff(float *inputs, float *result, int num)
+{
+	// TODO
+	return;
 }
 

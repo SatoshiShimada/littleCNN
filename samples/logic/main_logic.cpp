@@ -14,7 +14,10 @@ int main(int argc, char *argv[])
 	float d[4][2];
 	int value;
 	fp = fopen("dataset/logic/train-exor.txt", "r");
-	if(!fp) return 0;
+	if(!fp) {
+		std::cerr << "Error: couldn't open dataset file" << std::endl;
+		return 0;
+	}
 	for(int i = 0; i < trainingDataNum; i++) {
 		trainingData[i] = d[i];
 		for(int j = 0; j < 2; j++) {
@@ -28,7 +31,10 @@ int main(int argc, char *argv[])
 	}
 	fclose(fp);
 	fp = fopen("dataset/logic/train-exor-label.txt", "r");
-	if(!fp) return 0;
+	if(!fp) {
+		std::cerr << "Error: couldn't open dataset file" << std::endl;
+		return 0;
+	}
 	float l[4][2];
 	for(int i = 0; i < trainingDataNum; i++) {
 		labelData[i] = l[i];

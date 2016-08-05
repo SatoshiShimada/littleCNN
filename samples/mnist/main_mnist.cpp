@@ -13,7 +13,10 @@ int main(int argc, char *argv[])
 	float *trainingData[trainingDataNum];
 	float *labelData[trainingDataNum];
 	fp = fopen("dataset/mnist/train-images.txt", "r");
-	if(!fp) return 0;
+	if(!fp) {
+		std::cerr << "Error: couldn't open dataset file" << std::endl;
+		return 0;
+	}
 	for(int i = 0; i < trainingDataNum; i++) {
 		trainingData[i] = new float[784];
 		for(int j = 0; j < 784; j++) {
@@ -27,7 +30,10 @@ int main(int argc, char *argv[])
 	}
 	fclose(fp);
 	fp = fopen("dataset/mnist/train-labels.txt", "r");
-	if(!fp) return 0;
+	if(!fp) {
+		std::cerr << "Error: couldn't open dataset file" << std::endl;
+		return 0;
+	}
 	int label;
 	for(int i = 0; i < trainingDataNum; i++) {
 		ret = fscanf(fp, " %d", &label);
