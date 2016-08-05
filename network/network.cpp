@@ -200,7 +200,7 @@ void Network::saveParameters(char *filename)
 		fprintf(fp, "\n");
 	}
 	fclose(fp);
-	std::cerr << "saved parameters [" << filename << "]" << std::endl;
+	std::cerr << "saved parameters at [" << filename << "]" << std::endl;
 }
 
 void Network::loadParameters(char *filename)
