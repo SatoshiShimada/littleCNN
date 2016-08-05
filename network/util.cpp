@@ -15,7 +15,7 @@ bool randomRange(float *values, size_t size)
 	return true;
 }
 
-bool loadTrainingData(float **data, char *filename, int trainingDataNum, int countPerData)
+bool loadTrainingData(float **data, const char *filename, int trainingDataNum, int countPerData)
 {
 	int value;
 	int ret;
@@ -42,7 +42,7 @@ bool loadTrainingData(float **data, char *filename, int trainingDataNum, int cou
 	return true;
 }
 
-bool loadTrainingLabel(float **data, char *filename, int labelDataNum, int countPerData)
+bool loadTrainingLabel(float **data, const char *filename, int labelDataNum, int countPerData)
 {
 	int value;
 	int ret;
