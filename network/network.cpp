@@ -313,4 +313,3 @@ void Network::visualize(float **testData, int layerIndex, int filterNum, int inp
 		}
 	}
 }
-

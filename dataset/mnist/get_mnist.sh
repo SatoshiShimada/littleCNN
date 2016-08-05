@@ -47,4 +47,3 @@ if [ $convert = "true" ]; then
 		count=$(expr $count + 1)
 	done
 fi
-
