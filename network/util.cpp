@@ -15,12 +15,14 @@ bool randomRange(float *values, size_t size)
 	return true;
 }
 
-bool loadTrainingData(float **data, const char *filename, int trainingDataNum, int countPerData)
+bool loadTrainingData(float **data, const char *filename, int trainingDataNum, int countPerData, int ratio)
 {
 	int value;
 	int ret;
 	FILE *fp;
-	
+
+	if(ratio == 0) ratio = 1;
+
 	fp = fopen(filename, "r");
 	if(!fp) {
 		std::cerr << "Error: couldn't open dataset file" << std::endl;
@@ -35,7 +37,7 @@ bool loadTrainingData(float **data, const char *filename, int trainingDataNum, i
 				std::cerr << filename << std::endl;
 				return false;
 			}
-			data[i][j] = (float)value;
+			data[i][j] = ((float)value) / ratio;
 		}
 	}
 	fclose(fp);
