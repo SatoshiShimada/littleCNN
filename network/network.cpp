@@ -29,6 +29,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 
 	for(int ep = 0; ep < epoch; ep++) {
 		for(int i = 0; i < trainingDataCount; i++) {
+			/* caluate accuracy by test data */
 			if(i % 10000 == 0) {
 				std::cerr << "images: [" << i << " / " << trainingDataCount << "]" << std::endl;
 				int acc = 0;
@@ -313,3 +314,4 @@ void Network::visualize(float **testData, int layerIndex, int filterNum, int inp
 		}
 	}
 }
+

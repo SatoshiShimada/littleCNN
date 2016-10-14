@@ -70,3 +70,4 @@ bool loadTrainingLabel(float **data, const char *filename, int labelDataNum, int
 	fclose(fp);
 	return true;
 }
+

@@ -8,3 +8,4 @@ bool loadTrainingData(float **data, const char *filename, int trainingDataNum, i
 bool loadTrainingLabel(float **data, const char *filename, int labelDataNum, int countPerData);
 
 #endif // __UTIL_H__
+
