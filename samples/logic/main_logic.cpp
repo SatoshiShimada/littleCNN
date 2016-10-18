@@ -7,28 +7,22 @@
 int main(int argc, char *argv[])
 {
 	/* create Data */
-	int ret;
-	FILE *fp;
+	bool re;
 	const int trainingDataNum = 4;
+	const int dataDim = 2;
 	float *trainingData[trainingDataNum];
 	float *labelData[trainingDataNum];
-	float d[4][2];
-	float l[4][2];
-	int value;
 	
-	bool re;
-	trainingData[0] = d[0];
-	trainingData[1] = d[1];
-	trainingData[2] = d[2];
-	trainingData[3] = d[3];
-	re = loadTrainingData(trainingData, "dataset/logic/train-exor.txt", trainingDataNum, 2);
+	for(int i = 0; i < trainingDataNum; i++) {
+		trainingData[i] = new float(dataDim);
+	}
+	re = loadTrainingData(trainingData, "dataset/logic/train-exor.txt", trainingDataNum, dataDim);
 	if(re == false) return 0;
 
-	labelData[0] = l[0];
-	labelData[1] = l[1];
-	labelData[2] = l[2];
-	labelData[3] = l[3];
-	re = loadTrainingLabel(labelData, "dataset/logic/train-exor-label.txt", trainingDataNum, 2);
+	for(int i = 0; i < trainingDataNum; i++) {
+		labelData[i] = new float(dataDim);
+	}
+	re = loadTrainingLabel(labelData, "dataset/logic/train-exor-label.txt", trainingDataNum, dataDim);
 	if(re == false) return 0;
 
 	for(int i = 0; i < 4; i++) {
@@ -68,6 +62,11 @@ int main(int argc, char *argv[])
 	delete act2t;
 	delete full1;
 	delete full2;
+
+	for(int i = 0; i < trainingDataNum; i++)
+		delete trainingData[i];
+	for(int i = 0; i < trainingDataNum; i++)
+		delete labelData[i];
 
 	return 0;
 }
