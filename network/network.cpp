@@ -29,6 +29,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 
 	for(int ep = 0; ep < epoch; ep++) {
 		for(int i = 0; i < trainingDataCount; i++) {
+			/* caluate accuracy by test data */
 			if(i % 10000 == 0) {
 				std::cerr << "images: [" << i << " / " << trainingDataCount << "]" << std::endl;
 				int acc = 0;
@@ -41,9 +42,9 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 					std::vector<float> result(z[layerNum], z[layerNum]+10);
 					std::vector<float>::iterator maxIt = std::max_element(result.begin(), result.end());
 					int maxIndex = std::distance(result.begin(), maxIt);
-					std::vector<float> label(testDataLabel[i], testDataLabel[i] + 10);
-					std::vector<float>::iterator maxItLabel = std::max_element(label.begin(), label.end());
-					int labelIndex = std::distance(label.begin(), maxItLabel);
+					std::vector<float> testlabel(testDataLabel[i], testDataLabel[i] + 10);
+					std::vector<float>::iterator maxItLabel = std::max_element(testlabel.begin(), testlabel.end());
+					int labelIndex = std::distance(testlabel.begin(), maxItLabel);
 					if(maxIndex == labelIndex)
 						acc++;
 				}
@@ -86,9 +87,9 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 					std::vector<float> result(z[layerNum], z[layerNum]+10);
 					std::vector<float>::iterator maxIt = std::max_element(result.begin(), result.end());
 					int maxIndex = std::distance(result.begin(), maxIt);
-					std::vector<float> label(labelData[i], labelData[i] + 10);
-					std::vector<float>::iterator maxItLabel = std::max_element(label.begin(), label.end());
-					int labelIndex = std::distance(label.begin(), maxItLabel);
+					std::vector<float> testlabel(labelData[i], labelData[i] + 10);
+					std::vector<float>::iterator maxItLabel = std::max_element(testlabel.begin(), testlabel.end());
+					int labelIndex = std::distance(testlabel.begin(), maxItLabel);
 					if(maxIndex == labelIndex)
 						acc++;
 				}
@@ -106,9 +107,9 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 					std::vector<float> result(z[layerNum], z[layerNum]+10);
 					std::vector<float>::iterator maxIt = std::max_element(result.begin(), result.end());
 					int maxIndex = std::distance(result.begin(), maxIt);
-					std::vector<float> label(testDataLabel[i], testDataLabel[i] + 10);
-					std::vector<float>::iterator maxItLabel = std::max_element(label.begin(), label.end());
-					int labelIndex = std::distance(label.begin(), maxItLabel);
+					std::vector<float> testlabel(testDataLabel[i], testDataLabel[i] + 10);
+					std::vector<float>::iterator maxItLabel = std::max_element(testlabel.begin(), testlabel.end());
+					int labelIndex = std::distance(testlabel.begin(), maxItLabel);
 					if(maxIndex == labelIndex)
 						acc++;
 				}
@@ -117,8 +118,10 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 			}
 		}
 	}
-	//delete z;
-	//delete label;
+	delete z;
+	for(int j = 0; j < layerNum; j++)
+		delete delta[j];
+	delete delta;
 }
 
 void Network::test(float **testData, float **testDataLabel, int testDataNum)
@@ -144,6 +147,8 @@ void Network::test(float **testData, float **testDataLabel, int testDataNum)
 	}
 	printf("accuracy [%d / %d]\n", acc, testDataNum);
 	printf("\t%f%%\n", acc * 100.0 / testDataNum);
+
+	delete z;
 }
 
 void Network::setTest(float **testData, float **testDataLabel, int testDataNum, int interval)
@@ -200,7 +205,7 @@ void Network::saveParameters(char *filename)
 		fprintf(fp, "\n");
 	}
 	fclose(fp);
-	std::cerr << "saved parameters [" << filename << "]" << std::endl;
+	std::cerr << "saved parameters at [" << filename << "]" << std::endl;
 }
 
 void Network::loadParameters(char *filename)
@@ -312,5 +317,6 @@ void Network::visualize(float **testData, int layerIndex, int filterNum, int inp
 			fclose(fout);
 		}
 	}
+	delete z;
 }
 
