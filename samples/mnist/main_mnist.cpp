@@ -10,17 +10,19 @@ int main(int argc, char *argv[])
 
 	/* Load training data */
 	const int trainingDataNum = 60000;
+	const int dataDim = 784; /* 28 x 28 = 784 pixel */
+	const int outDim = 10; /* 10 type of digits */
 	float *trainingData[trainingDataNum];
 	float *labelData[trainingDataNum];
 
 	for(int i = 0; i < trainingDataNum; i++)
-		trainingData[i] = new float[784];
-	re = loadTrainingData(trainingData, "dataset/mnist/train-images.txt", trainingDataNum, 784, 255);
+		trainingData[i] = new float[dataDim];
+	re = loadTrainingData(trainingData, "dataset/mnist/train-images.txt", trainingDataNum, dataDim, 255);
 	if(re == false) return 0;
 
 	for(int i = 0; i < trainingDataNum; i++)
-		labelData[i] = new float[10];
-	re = loadTrainingLabel(labelData, "dataset/mnist/train-labels.txt", trainingDataNum, 10);
+		labelData[i] = new float[outDim];
+	re = loadTrainingLabel(labelData, "dataset/mnist/train-labels.txt", trainingDataNum, outDim);
 	if(re == false) return 0;
 
 	/* Load test data */
@@ -29,13 +31,13 @@ int main(int argc, char *argv[])
 	float *testLabelData[testDataNum];
 
 	for(int i = 0; i < testDataNum; i++)
-		testData[i] = new float[784];
-	re = loadTrainingData(testData, "dataset/mnist/test-images.txt", testDataNum, 784, 255);
+		testData[i] = new float[dataDim];
+	re = loadTrainingData(testData, "dataset/mnist/test-images.txt", testDataNum, dataDim, 255);
 	if(re == false) return 0;
 
 	for(int i = 0; i < testDataNum; i++)
-		testLabelData[i] = new float[10];
-	re = loadTrainingLabel(testLabelData, "dataset/mnist/test-labels.txt", testDataNum, 10);
+		testLabelData[i] = new float[outDim];
+	re = loadTrainingLabel(testLabelData, "dataset/mnist/test-labels.txt", testDataNum, outDim);
 	if(re == false) return 0;
 	std::cout << "Dataset loaded" << std::endl;
 
@@ -56,8 +58,8 @@ int main(int argc, char *argv[])
 	act2t = new act_T;
 	act2t->apply = logistic_apply;
 	act2t->diff  = logistic_diff;
-	full1 = new FullyConnectedLayer(784, 100, act1t, lr);
-	full2 = new FullyConnectedLayer(100, 10, act2t, lr);
+	full1 = new FullyConnectedLayer(dataDim, 100, act1t, lr);
+	full2 = new FullyConnectedLayer(100, outDim, act2t, lr);
 
 	net->appendLayer(full1);
 	net->appendLayer(full2);
@@ -73,6 +75,11 @@ int main(int argc, char *argv[])
 	delete act2t;
 	delete full1;
 	delete full2;
+
+	for(int i = 0; i < trainingDataNum; i++)
+		delete trainingData[i];
+	for(int i = 0; i < trainingDataNum; i++)
+		delete labelData[i];
 
 	return 0;
 }

@@ -10,17 +10,19 @@ int main(int argc, char *argv[])
 
 	/* Load training data */
 	const int trainingDataNum = 60000;
+	const int dataNum = 784; /* 28 x 28 = 784 pixel */
+	const int outDim = 10; /* 10 types of digits */
 	float *trainingData[trainingDataNum];
 	float *labelData[trainingDataNum];
 
 	for(int i = 0; i < trainingDataNum; i++)
-		trainingData[i] = new float[784];
-	re = loadTrainingData(trainingData, "dataset/mnist/train-images.txt", trainingDataNum, 784, 255);
+		trainingData[i] = new float[dataNum];
+	re = loadTrainingData(trainingData, "dataset/mnist/train-images.txt", trainingDataNum, dataNum, 255);
 	if(re == false) return 0;
 
 	for(int i = 0; i < trainingDataNum; i++)
-		labelData[i] = new float[10];
-	re = loadTrainingLabel(labelData, "dataset/mnist/train-labels.txt", trainingDataNum, 10);
+		labelData[i] = new float[outDim];
+	re = loadTrainingLabel(labelData, "dataset/mnist/train-labels.txt", trainingDataNum, outDim);
 	if(re == false) return 0;
 
 	/* Load test data */
@@ -29,13 +31,13 @@ int main(int argc, char *argv[])
 	float *testLabelData[testDataNum];
 
 	for(int i = 0; i < testDataNum; i++)
-		testData[i] = new float[784];
-	re = loadTrainingData(testData, "dataset/mnist/test-images.txt", testDataNum, 784, 255);
+		testData[i] = new float[dataNum];
+	re = loadTrainingData(testData, "dataset/mnist/test-images.txt", testDataNum, dataNum, 255);
 	if(re == false) return 0;
 
 	for(int i = 0; i < testDataNum; i++)
-		testLabelData[i] = new float[10];
-	re = loadTrainingLabel(testLabelData, "dataset/mnist/test-labels.txt", testDataNum, 10);
+		testLabelData[i] = new float[outDim];
+	re = loadTrainingLabel(testLabelData, "dataset/mnist/test-labels.txt", testDataNum, outDim);
 	if(re == false) return 0;
 	std::cout << "Dataset loaded" << std::endl;
 
@@ -69,7 +71,7 @@ int main(int argc, char *argv[])
 	conv2 = new ConvolutionLayer(12, 12, 6, 4, 4, 14, act2, lr);
 	pool2 = new MaxPoolingLayer(8, 8, 14, 4, 4);
 	full1 = new FullyConnectedLayer(224, 50, act2, lr);
-	full2 = new FullyConnectedLayer(50, 10, act3, lr);
+	full2 = new FullyConnectedLayer(50, outDim, act3, lr);
 
 	net->appendLayer(conv1);
 	net->appendLayer(pool1);
@@ -95,6 +97,11 @@ int main(int argc, char *argv[])
 	delete pool2;
 	delete full1;
 	delete full2;
+
+	for(int i = 0; i < trainingDataNum; i++)
+		delete trainingData[i];
+	for(int i = 0; i < trainingDataNum; i++)
+		delete labelData[i];
 
 	return 0;
 }
