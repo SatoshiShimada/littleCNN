@@ -118,7 +118,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 			}
 		}
 	}
-	delete z;
+	delete[] z;
 	for(int j = 0; j < layerNum; j++)
 		delete delta[j];
 	delete delta;
@@ -148,7 +148,7 @@ void Network::test(float **testData, float **testDataLabel, int testDataNum)
 	printf("accuracy [%d / %d]\n", acc, testDataNum);
 	printf("\t%f%%\n", acc * 100.0 / testDataNum);
 
-	delete z;
+	delete[] z;
 }
 
 void Network::setTest(float **testData, float **testDataLabel, int testDataNum, int interval)
@@ -317,6 +317,6 @@ void Network::visualize(float **testData, int layerIndex, int filterNum, int inp
 			fclose(fout);
 		}
 	}
-	delete z;
+	delete[] z;
 }
 

@@ -77,7 +77,7 @@ float *ConvolutionLayer::forward(float *inputs, int padding_size)
 	}
 
 	ret = this->forward(padding_input);
-	delete padding_input;
+	delete[] padding_input;
 	return ret;
 }
 

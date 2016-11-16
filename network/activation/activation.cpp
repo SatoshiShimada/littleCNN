@@ -40,7 +40,7 @@ void softmax_apply(float *inputs, float *result, int num)
 	for(int i = 0; i < num; i++) {
 		buf += expf(inputs[i]);
 	}
-	if(buf = 0.0) return;
+	if(buf == 0.0) return;
 	for(int i = 0; i < num; i++) {
 		result[i] = expf(inputs[i]) / buf;
 	}
