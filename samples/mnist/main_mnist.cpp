@@ -2,82 +2,43 @@
 #include <iostream>
 
 #include "../../network/network.h"
+#include "../../network/util.h"
 
 int main(int argc, char *argv[])
 {
-	/* create Data */
-	int ret;
-	FILE *fp;
-	int value;
+	bool re;
+
+	/* Load training data */
 	const int trainingDataNum = 60000;
+	const int dataDim = 784; /* 28 x 28 = 784 pixel */
+	const int outDim = 10; /* 10 type of digits */
 	float *trainingData[trainingDataNum];
 	float *labelData[trainingDataNum];
-	fp = fopen("dataset/mnist/train-images.txt", "r");
-	if(!fp) {
-		std::cerr << "Error: couldn't open dataset file" << std::endl;
-		return 0;
-	}
-	for(int i = 0; i < trainingDataNum; i++) {
-		trainingData[i] = new float[784];
-		for(int j = 0; j < 784; j++) {
-			ret = fscanf(fp, " %d", &value);
-			if(ret != 1) {
-				std::cerr << "Error: couldn't load training dataset" << std::endl;
-				return -1;
-			}
-			*(trainingData[i] + j) = value / 255.0;
-		}
-	}
-	fclose(fp);
-	fp = fopen("dataset/mnist/train-labels.txt", "r");
-	if(!fp) {
-		std::cerr << "Error: couldn't open dataset file" << std::endl;
-		return 0;
-	}
-	int label;
-	for(int i = 0; i < trainingDataNum; i++) {
-		ret = fscanf(fp, " %d", &label);
-		if(ret != 1) {
-			std::cerr << "Error: couldn't load training dataset" << std::endl;
-			return -1;
-		}
-		labelData[i] = new float[10];
-		for(int j = 0; j < 10; j++) {
-			*(labelData[i] + j) = ((j == label) ? 1.0 : 0.0);
-		}
-	}
-	fclose(fp);
+
+	for(int i = 0; i < trainingDataNum; i++)
+		trainingData[i] = new float[dataDim];
+	re = loadTrainingData(trainingData, "dataset/mnist/train-images.txt", trainingDataNum, dataDim, 255);
+	if(re == false) return 0;
+
+	for(int i = 0; i < trainingDataNum; i++)
+		labelData[i] = new float[outDim];
+	re = loadTrainingLabel(labelData, "dataset/mnist/train-labels.txt", trainingDataNum, outDim);
+	if(re == false) return 0;
+
+	/* Load test data */
 	const int testDataNum = 10000;
 	float *testData[testDataNum];
 	float *testLabelData[testDataNum];
-	fp = fopen("dataset/mnist/test-images.txt", "r");
-	if(!fp) return 0;
-	for(int i = 0; i < testDataNum; i++) {
-		testData[i] = new float[784];
-		for(int j = 0; j < 784; j++) {
-			ret = fscanf(fp, " %d", &value);
-			if(ret != 1) {
-				std::cerr << "Error: couldn't load training dataset" << std::endl;
-				return -1;
-			}
-			*(testData[i] + j) = value / 255.0;
-		}
-	}
-	fclose(fp);
-	fp = fopen("dataset/mnist/test-labels.txt", "r");
-	if(!fp) return 0;
-	for(int i = 0; i < testDataNum; i++) {
-		ret = fscanf(fp, " %d", &label);
-		if(ret != 1) {
-			std::cerr << "Error: couldn't load training dataset" << std::endl;
-			return -1;
-		}
-		testLabelData[i] = new float[10];
-		for(int j = 0; j < 10; j++) {
-			*(testLabelData[i] + j) = ((j == label) ? 1.0 : 0.0);
-		}
-	}
-	fclose(fp);
+
+	for(int i = 0; i < testDataNum; i++)
+		testData[i] = new float[dataDim];
+	re = loadTrainingData(testData, "dataset/mnist/test-images.txt", testDataNum, dataDim, 255);
+	if(re == false) return 0;
+
+	for(int i = 0; i < testDataNum; i++)
+		testLabelData[i] = new float[outDim];
+	re = loadTrainingLabel(testLabelData, "dataset/mnist/test-labels.txt", testDataNum, outDim);
+	if(re == false) return 0;
 	std::cout << "Dataset loaded" << std::endl;
 
 	/* parameters */
@@ -97,8 +58,8 @@ int main(int argc, char *argv[])
 	act2t = new act_T;
 	act2t->apply = logistic_apply;
 	act2t->diff  = logistic_diff;
-	full1 = new FullyConnectedLayer(784, 100, act1t, lr);
-	full2 = new FullyConnectedLayer(100, 10, act2t, lr);
+	full1 = new FullyConnectedLayer(dataDim, 100, act1t, lr);
+	full2 = new FullyConnectedLayer(100, outDim, act2t, lr);
 
 	net->appendLayer(full1);
 	net->appendLayer(full2);
@@ -115,6 +76,10 @@ int main(int argc, char *argv[])
 	delete full1;
 	delete full2;
 
+	for(int i = 0; i < trainingDataNum; i++)
+		delete trainingData[i];
+	for(int i = 0; i < trainingDataNum; i++)
+		delete labelData[i];
+
 	return 0;
 }
-

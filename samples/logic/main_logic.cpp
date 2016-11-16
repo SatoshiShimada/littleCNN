@@ -2,52 +2,28 @@
 #include <iostream>
 
 #include "../../network/network.h"
+#include "../../network/util.h"
 
 int main(int argc, char *argv[])
 {
 	/* create Data */
-	int ret;
-	FILE *fp;
+	bool re;
 	const int trainingDataNum = 4;
+	const int dataDim = 2;
 	float *trainingData[trainingDataNum];
 	float *labelData[trainingDataNum];
-	float d[4][2];
-	int value;
-	fp = fopen("dataset/logic/train-exor.txt", "r");
-	if(!fp) {
-		std::cerr << "Error: couldn't open dataset file" << std::endl;
-		return 0;
-	}
+	
 	for(int i = 0; i < trainingDataNum; i++) {
-		trainingData[i] = d[i];
-		for(int j = 0; j < 2; j++) {
-			ret = fscanf(fp, " %d", &value);
-			if(ret != 1) {
-				std::cerr << "Error: couldn't load training dataset" << std::endl;
-				return -1;
-			}
-			d[i][j] = (float)value;
-		}
+		trainingData[i] = new float(dataDim);
 	}
-	fclose(fp);
-	fp = fopen("dataset/logic/train-exor-label.txt", "r");
-	if(!fp) {
-		std::cerr << "Error: couldn't open dataset file" << std::endl;
-		return 0;
-	}
-	float l[4][2];
+	re = loadTrainingData(trainingData, "dataset/logic/train-exor.txt", trainingDataNum, dataDim);
+	if(re == false) return 0;
+
 	for(int i = 0; i < trainingDataNum; i++) {
-		labelData[i] = l[i];
-		ret = fscanf(fp, " %d", &value);
-		if(ret != 1) {
-			std::cerr << "Error: couldn't load training dataset" << std::endl;
-			return -1;
-		}
-		for(int j = 0; j < 2; j++) {
-			l[i][j] = ((value == j) ? 1.0 : 0.0);
-		}
+		labelData[i] = new float(dataDim);
 	}
-	fclose(fp);
+	re = loadTrainingLabel(labelData, "dataset/logic/train-exor-label.txt", trainingDataNum, dataDim);
+	if(re == false) return 0;
 
 	for(int i = 0; i < 4; i++) {
 		std::cout << trainingData[i][0] << trainingData[i][1] << " | ";
@@ -87,6 +63,10 @@ int main(int argc, char *argv[])
 	delete full1;
 	delete full2;
 
+	for(int i = 0; i < trainingDataNum; i++)
+		delete trainingData[i];
+	for(int i = 0; i < trainingDataNum; i++)
+		delete labelData[i];
+
 	return 0;
 }
-
