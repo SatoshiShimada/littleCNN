@@ -11,31 +11,31 @@
 class LayerParameters
 {
 public:
-int append_parameter(std::string first, std::string second)
-{
-	if(first == "type") {
-		type = second;
-	} else if(first == "inputNum") {
-		inputNum = second;
-	} else if(first == "outputNum") {
-		outputNum = second;
-	} else if(first == "activation") {
-		activation = second;
-	} else if(first == "learningRate") {
-		lr = second;
-	}
-	return 0;
-}
+	 int append_parameter(std::string first, std::string second)
+	 {
+		  if(first == "type") {
+			   type = second;
+		  } else if(first == "inputNum") {
+			   inputNum = second;
+		  } else if(first == "outputNum") {
+			   outputNum = second;
+		  } else if(first == "activation") {
+			   activation = second;
+		  } else if(first == "learningRate") {
+			   lr = second;
+		  }
+		  return 0;
+	 }
 
-	int print_parameters(void)
-		{
-			std::cout << "type: " << type << std::endl;
-			std::cout << "input num: " << inputNum << std::endl;
-			std::cout << "output num: " << outputNum << std::endl;
-			std::cout << "activation function: " << activation << std::endl;
-			std::cout << "learning rate: " << lr << std::endl;
-			return 0;
-		}
+	 int print_parameters(void)
+	 {
+		  std::cout << "type: " << type << std::endl;
+		  std::cout << "input num: " << inputNum << std::endl;
+		  std::cout << "output num: " << outputNum << std::endl;
+		  std::cout << "activation function: " << activation << std::endl;
+		  std::cout << "learning rate: " << lr << std::endl;
+		  return 0;
+	 }
 	
 private:
 	std::string type;
