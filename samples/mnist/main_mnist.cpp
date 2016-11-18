@@ -39,11 +39,11 @@ int main(int argc, char *argv[])
 		testLabelData[i] = new float[outDim];
 	re = loadTrainingLabel(testLabelData, "dataset/mnist/test-labels.txt", testDataNum, outDim);
 	if(re == false) return 0;
-	std::cout << "Dataset loaded" << std::endl;
+	std::cout << "Load data" << std::endl;
 
 	/* parameters */
-	int epoch = 50;
-	float lr = 0.01;
+	int epoch = 100;
+	float lr = 0.005;
 
 	/* Create Network */
 	Network *net;
@@ -65,10 +65,10 @@ int main(int argc, char *argv[])
 	net->appendLayer(full2);
 
 	net->setTest(testData, testLabelData, testDataNum);
-	//net->loadParameters((char *)"parameters/mnist/200.param");
+	//net->loadParameters("parameters/mnist/100ep.param");
 	net->train(trainingData, labelData, trainingDataNum, epoch);
-	//net->saveParameters((char *)"parameters/mnist/250.param");
-	//net->test(testData, testLabelData, testDataNum);
+	//net->saveParameters("parameters/mnist/100ep.param");
+	net->test(testData, testLabelData, testDataNum);
 
 	delete net;
 	delete act1t;
@@ -83,3 +83,4 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+

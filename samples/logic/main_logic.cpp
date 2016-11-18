@@ -55,7 +55,7 @@ int main(int argc, char *argv[])
 
 	net->setTest(trainingData, labelData, trainingDataNum, 1000);
 	net->train(trainingData, labelData, trainingDataNum, epoch);
-	net->saveParameters((char *)"parameters/logic/exor_20000.param");
+	net->saveParameters("parameters/logic/exor_20000.param");
 
 	delete net;
 	delete act1t;

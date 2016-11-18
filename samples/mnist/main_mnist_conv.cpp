@@ -81,9 +81,9 @@ int main(int argc, char *argv[])
 	net->appendLayer(full2);
 
 	net->setTest(testData, testLabelData, testDataNum, 1);
-	//net->loadParameters((char *)"parameters/mnist/conv_6layer_10.param");
+	//net->loadParameters("parameters/mnist/conv_6layer_10.param");
 	net->train(trainingData, labelData, trainingDataNum, epoch);
-	net->saveParameters((char *)"parameters/mnist/conv_6layer_20.param");
+	net->saveParameters("parameters/mnist/conv_6layer_20.param");
 	//net->test(testData, testLabelData, testDataNum);
 
 	delete net;

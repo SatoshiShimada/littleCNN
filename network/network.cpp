@@ -145,7 +145,7 @@ void Network::setTest(float **testData, float **testDataLabel, int testDataNum)
 	this->testInterval = 1;
 }
 
-void Network::saveParameters(char *filename)
+void Network::saveParameters(const char *filename)
 {
 	int layerNum = layers.size();
 	FILE *fp;
@@ -184,7 +184,7 @@ void Network::saveParameters(char *filename)
 	std::cerr << "Saved parameters at [" << filename << "]" << std::endl;
 }
 
-void Network::loadParameters(char *filename)
+void Network::loadParameters(const char *filename)
 {
 	int layerNum = layers.size();
 	int ret;
