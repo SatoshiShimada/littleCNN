@@ -1,4 +1,9 @@
 
+/*
+ * Sample code for mnist dataset.
+ * Only use fully-connected layer.
+ */
+
 #include <iostream>
 
 #include "../../network/network.h"
@@ -8,7 +13,7 @@ int main(int argc, char *argv[])
 {
 	bool re;
 
-	/* Load training data */
+	/* Load training data and label */
 	const int trainingDataNum = 60000;
 	const int dataDim = 784; /* 28 x 28 = 784 pixel */
 	const int outDim = 10; /* 10 type of digits */
@@ -25,7 +30,7 @@ int main(int argc, char *argv[])
 	re = loadTrainingLabel(labelData, "dataset/mnist/train-labels.txt", trainingDataNum, outDim);
 	if(re == false) return 0;
 
-	/* Load test data */
+	/* Load test data and label */
 	const int testDataNum = 10000;
 	float *testData[testDataNum];
 	float *testLabelData[testDataNum];
@@ -39,13 +44,14 @@ int main(int argc, char *argv[])
 		testLabelData[i] = new float[outDim];
 	re = loadTrainingLabel(testLabelData, "dataset/mnist/test-labels.txt", testDataNum, outDim);
 	if(re == false) return 0;
-	std::cout << "Dataset loaded" << std::endl;
+	std::cout << "Load data" << std::endl;
 
 	/* parameters */
-	int epoch = 50;
-	float lr = 0.01;
+	int epoch = 100;
+	float lr = 0.005;
 
 	/* Create Network */
+	/* Neuron number: 784 - 100 - 10 */
 	Network *net;
 	net = new Network();
 
@@ -65,10 +71,10 @@ int main(int argc, char *argv[])
 	net->appendLayer(full2);
 
 	net->setTest(testData, testLabelData, testDataNum);
-	//net->loadParameters((char *)"parameters/mnist/200.param");
+	//net->loadParameters("parameters/mnist/100ep.param");
 	net->train(trainingData, labelData, trainingDataNum, epoch);
-	//net->saveParameters((char *)"parameters/mnist/250.param");
-	//net->test(testData, testLabelData, testDataNum);
+	//net->saveParameters("parameters/mnist/100ep.param");
+	net->test(testData, testLabelData, testDataNum);
 
 	delete net;
 	delete act1t;
@@ -83,3 +89,4 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+

@@ -29,28 +29,6 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 
 	for(int ep = 0; ep < epoch; ep++) {
 		for(int i = 0; i < trainingDataCount; i++) {
-			/* caluate accuracy by test data */
-			if(i % 10000 == 0) {
-				std::cerr << "images: [" << i << " / " << trainingDataCount << "]" << std::endl;
-				int acc = 0;
-				for(int i = 0; i < testDataNum; i++) {
-					/* feed forward */
-					z[0] = testData[i];
-					for(int n = 0; n < layerNum; n++) {
-						z[n+1] = layers[n]->forward(z[n]);
-					}
-					std::vector<float> result(z[layerNum], z[layerNum]+10);
-					std::vector<float>::iterator maxIt = std::max_element(result.begin(), result.end());
-					int maxIndex = std::distance(result.begin(), maxIt);
-					std::vector<float> testlabel(testDataLabel[i], testDataLabel[i] + 10);
-					std::vector<float>::iterator maxItLabel = std::max_element(testlabel.begin(), testlabel.end());
-					int labelIndex = std::distance(testlabel.begin(), maxItLabel);
-					if(maxIndex == labelIndex)
-						acc++;
-				}
-				printf("Test [Epoch: %d] [%d / %d]\n", ep, acc, testDataNum);
-				printf("\t%f%%\n", acc * 100.0 / testDataNum);
-			}
 			/* feed forward */
 			z[0] = trainingData[i];
 			label = labelData[i];
@@ -59,9 +37,8 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 			}
 			/* calculate error for output layer */
 			delta = new float *[layerNum];
-			for(int j = 0; j < layerNum; j++) {
-				delta[j] = new float[layers[layerNum-1]->outputNum];
-			}
+			delta[layerNum-1] = new float[layers[layerNum-1]->outputNum];
+
 			output = layers[layerNum-1]->getOutput();
 			for(int n = 0; n < layers[layerNum-1]->outputNum; n++) {
 				delta[layerNum-1][n] = (z[layerNum][n] - label[n]) ;//* layers[layerNum-1]->diff(output[n]);
@@ -113,14 +90,13 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 					if(maxIndex == labelIndex)
 						acc++;
 				}
-				printf("Test [Epoch: %d] [%d / %d]\n", ep, acc, testDataNum);
+				printf("Test accuracy [Epoch: %d] [%d / %d]\n", ep, acc, testDataNum);
 				printf("\t%f%%\n", acc * 100.0 / testDataNum);
 			}
 		}
 	}
 	delete[] z;
-	for(int j = 0; j < layerNum; j++)
-		delete delta[j];
+	delete delta[layerNum - 1];
 	delete delta;
 }
 
@@ -145,7 +121,7 @@ void Network::test(float **testData, float **testDataLabel, int testDataNum)
 		if(maxIndex == labelIndex)
 			acc++;
 	}
-	printf("accuracy [%d / %d]\n", acc, testDataNum);
+	printf("Test accuracy [%d / %d]\n", acc, testDataNum);
 	printf("\t%f%%\n", acc * 100.0 / testDataNum);
 
 	delete[] z;
@@ -169,7 +145,7 @@ void Network::setTest(float **testData, float **testDataLabel, int testDataNum)
 	this->testInterval = 1;
 }
 
-void Network::saveParameters(char *filename)
+void Network::saveParameters(const char *filename)
 {
 	int layerNum = layers.size();
 	FILE *fp;
@@ -205,10 +181,10 @@ void Network::saveParameters(char *filename)
 		fprintf(fp, "\n");
 	}
 	fclose(fp);
-	std::cerr << "saved parameters at [" << filename << "]" << std::endl;
+	std::cerr << "Saved parameters at [" << filename << "]" << std::endl;
 }
 
-void Network::loadParameters(char *filename)
+void Network::loadParameters(const char *filename)
 {
 	int layerNum = layers.size();
 	int ret;
@@ -233,13 +209,13 @@ void Network::loadParameters(char *filename)
 			if(flag) {
 				ret = fscanf(fp, "%c", &buf);
 				if(ret != 1) {
-					std::cerr << "file read error" << std::endl;
+					std::cerr << "Read file error" << std::endl;
 					return;
 				}
 			}
 			ret = fscanf(fp, "%f", (w + cnt));
 			if(ret != 1) {
-				std::cerr << "file read error" << std::endl;
+				std::cerr << "Read file error" << std::endl;
 				return;
 			}
 			flag = true;
@@ -250,20 +226,20 @@ void Network::loadParameters(char *filename)
 			if(flag) {
 				ret = fscanf(fp, "%c", &buf);
 				if(ret != 1) {
-					std::cerr << "file read error" << std::endl;
+					std::cerr << "Read file error" << std::endl;
 					return;
 				}
 			}
 			ret = fscanf(fp, "%f", (b + cnt));
 			if(ret != 1) {
-				std::cerr << "file read error" << std::endl;
+				std::cerr << "Read file error" << std::endl;
 				return;
 			}
 			flag = true;
 		}
 		ret = fscanf(fp, "%c", &buf); /* skip new line */
 		if(ret != 1) {
-			std::cerr << "file read error" << std::endl;
+			std::cerr << "Read file error" << std::endl;
 			return;
 		}
 	}
@@ -272,6 +248,7 @@ void Network::loadParameters(char *filename)
 
 void Network::visualize(float **testData, int layerIndex, int filterNum, int inputChannels, int imageHeight, int imageWidth)
 {
+	/* output weights to image file for visualize weights */
 	float **z = new float *[layers.size()+1];
 	int layerNum = layers.size();
 	char filename[100];
@@ -303,7 +280,7 @@ void Network::visualize(float **testData, int layerIndex, int filterNum, int inp
 			sprintf(filename, "visual-%d-%d-%d.ppm", layerIndex, k, c);
 			fout = fopen(filename, "w");
 			if(!fout) {
-				std::cerr << "Error: file open" << std::endl;
+				std::cerr << "Open file error" << std::endl;
 				return;
 			}
 			fprintf(fout, "P2\n# visualized image of hidden layer\n");

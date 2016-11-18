@@ -6,13 +6,13 @@
 
 int main(int argc, char *argv[])
 {
-	/* create Data */
 	bool re;
 	const int trainingDataNum = 4;
 	const int dataDim = 2;
 	float *trainingData[trainingDataNum];
 	float *labelData[trainingDataNum];
 	
+	/* Load training data and label from file */
 	for(int i = 0; i < trainingDataNum; i++) {
 		trainingData[i] = new float(dataDim);
 	}
@@ -25,12 +25,13 @@ int main(int argc, char *argv[])
 	re = loadTrainingLabel(labelData, "dataset/logic/train-exor-label.txt", trainingDataNum, dataDim);
 	if(re == false) return 0;
 
+	/* Print training data with style */
 	for(int i = 0; i < 4; i++) {
 		std::cout << trainingData[i][0] << trainingData[i][1] << " | ";
 		std::cout << labelData[i][0] << labelData[i][1] << std::endl;
 	}
 
-	/* parameters */
+	/* Set parameters */
 	int epoch = 20000;
 	float lr = 0.1;
 
@@ -55,7 +56,7 @@ int main(int argc, char *argv[])
 
 	net->setTest(trainingData, labelData, trainingDataNum, 1000);
 	net->train(trainingData, labelData, trainingDataNum, epoch);
-	net->saveParameters((char *)"parameters/logic/exor_20000.param");
+	net->saveParameters("parameters/logic/exor_20000.param");
 
 	delete net;
 	delete act1t;
