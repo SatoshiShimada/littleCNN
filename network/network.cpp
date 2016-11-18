@@ -59,9 +59,8 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 			}
 			/* calculate error for output layer */
 			delta = new float *[layerNum];
-			for(int j = 0; j < layerNum; j++) {
-				delta[j] = new float[layers[layerNum-1]->outputNum];
-			}
+			delta[layerNum-1] = new float[layers[layerNum-1]->outputNum];
+
 			output = layers[layerNum-1]->getOutput();
 			for(int n = 0; n < layers[layerNum-1]->outputNum; n++) {
 				delta[layerNum-1][n] = (z[layerNum][n] - label[n]) ;//* layers[layerNum-1]->diff(output[n]);
@@ -119,8 +118,7 @@ void Network::train(float **trainingData, float **labelData, int trainingDataCou
 		}
 	}
 	delete[] z;
-	for(int j = 0; j < layerNum; j++)
-		delete delta[j];
+	delete delta[layerNum - 1];
 	delete delta;
 }
 
