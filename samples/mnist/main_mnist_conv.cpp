@@ -1,4 +1,9 @@
 
+/*
+ * Sample code for mnist dataset
+ * Using convolutinal layer and max-pooling layer
+ */
+
 #include <iostream>
 
 #include "../../network/network.h"
@@ -8,7 +13,7 @@ int main(int argc, char *argv[])
 {
 	bool re;
 
-	/* Load training data */
+	/* Load training data and label */
 	const int trainingDataNum = 60000;
 	const int dataNum = 784; /* 28 x 28 = 784 pixel */
 	const int outDim = 10; /* 10 types of digits */
@@ -25,7 +30,7 @@ int main(int argc, char *argv[])
 	re = loadTrainingLabel(labelData, "dataset/mnist/train-labels.txt", trainingDataNum, outDim);
 	if(re == false) return 0;
 
-	/* Load test data */
+   	/* Load test data and label */
 	const int testDataNum = 10000;
 	float *testData[testDataNum];
 	float *testLabelData[testDataNum];
@@ -41,7 +46,7 @@ int main(int argc, char *argv[])
 	if(re == false) return 0;
 	std::cout << "Dataset loaded" << std::endl;
 
-	/* parameters */
+	/* Parameters */
 	int epoch = 10;
 	float lr = 0.02;
 
