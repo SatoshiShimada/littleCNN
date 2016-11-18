@@ -266,13 +266,16 @@ void ConvolutionLayer::saveParameters(const char *filename)
 
 void ConvolutionLayer::loadParameters(const char *filename)
 {
+	size_t read_size;
 	FILE *fp;
 	fp = fopen(filename, "rb");
 	if(!fp) {
 		return;
 	}
-	fread(this->weight, sizeof(float), this->weightSize, fp);
-	fread(this->bias, sizeof(float), this->biasSize, fp);
+	read_size = fread(this->weight, sizeof(float), this->weightSize, fp);
+	if(read_size != (sizeof(float) * this->weightSize)) return;
+	read_size = fread(this->bias, sizeof(float), this->biasSize, fp);
+	if(read_size != (sizeof(float) * this->biasSize)) return;
 	fclose(fp);
 }
 
