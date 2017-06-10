@@ -2,8 +2,7 @@ language: cpp
 addons:
   apt:
     packages:
-      - clang-3.7
-      - g++-4
-      - gcc-4
+      - g++
+      - gcc
 script:
   - make
