@@ -2,7 +2,7 @@ language: cpp
 addons:
   apt:
     packages:
-      - g++
-      - gcc
+      - g++-4.8
+      - gcc-4.8
 script:
   - make
