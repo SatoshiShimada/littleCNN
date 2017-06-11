@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/SatoshiShimada/littleCNN.svg?branch=master)](https://travis-ci.org/SatoshiShimada/littleCNN)
 # littleCNN  
 The Convolutional Neural Network library.  
 for simple, easily.  
