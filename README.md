@@ -3,14 +3,14 @@
 The Convolutional Neural Network library.  
 for simple, easily.  
 
-## features  
+## Features  
 * Training with simple dataset
 * Calculate test accuracy in training
 * Save/Load parameters
 * Layers
- * Fully connected layer
- * Convolutional layer
- * Max-Pooling layer
+    * Fully connected layer
+    * Convolutional layer
+    * Max-Pooling layer
 
 ## Usage  
 Clone this repository.  
@@ -48,6 +48,10 @@ cd littleCNN
   mkdir -p parameters/mnist
   ./mnist
   ```
+
+## LICENSE
+
+MIT License
 
 ## Author  
 Satoshi SHIMADA  
